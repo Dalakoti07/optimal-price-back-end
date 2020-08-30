@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authApp',
     'rest_framework',
+    'scrapper',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,5 @@ REST_FRAMEWORK = {
 }
 
 REST_USE_JWT = True
+
+SELENIUM_DRIVER='./scarpper/driver.exe'

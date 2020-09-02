@@ -13,6 +13,24 @@
             "price":"_1vC4OE _2rQ-NK",
             "rating":"hGSR34",
             "image":"_3BTv9X"
+        },
+        "electronics":{
+            "card":"_3O0U0u",
+            "nested_card":"_3liAhj",
+            "href_product":"Zhf2z-",
+            "name":"_2cLu-l",
+            "price":"_1vC4OE",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
+        },
+        "books":{
+            "card":"_3O0U0u",
+            "nested_card":"_3liAhj",
+            "href_product":"Zhf2z-",
+            "name":"_2cLu-l",
+            "price":"_1vC4OE",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
         }
     },
     "amazon":{

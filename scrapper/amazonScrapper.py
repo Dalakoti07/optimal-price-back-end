@@ -48,7 +48,7 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
             else:
                 print("Name: {} and imageUrl: {}".format(name.text.split('(')[0],image_url),end=' ')
                 print("price: {} ".format(price.text))
-                print("*"*80+"\n")
+                print("\n")
                 
                 productsDict["product-{}".format(i)]={
                     "name":name.text.split('(')[0],

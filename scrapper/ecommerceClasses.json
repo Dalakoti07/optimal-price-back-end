@@ -5,7 +5,14 @@
             "name":"_3wU53n",
             "price":"_1vC4OE _2rQ-NK",
             "rating":"hGSR34",
-            "image":"_1Nyybr _30XEf0"
+            "image":"_3BTv9X"
+        },
+        "laptop":{
+            "card":"_31qSD5",
+            "name":"_3wU53n",
+            "price":"_1vC4OE _2rQ-NK",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
         }
     },
     "amazon":{
@@ -16,7 +23,7 @@
             "rating":"a-popover-trigger a-declarative",
             "image":"a-section aok-relative s-image-fixed-height"
         },
-        "laptops":{
+        "laptop":{
             "card":"s-include-content-margin s-border-bottom s-latency-cf-section",
             "name":"a-size-medium a-color-base a-text-normal",
             "price":"a-price-whole",

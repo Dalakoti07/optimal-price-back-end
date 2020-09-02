@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from requests import get
 import sys
 import csv
+import json
 # comment below line for when running from main 
 # from .models import Product
 
@@ -15,24 +16,32 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
     
     url = baseurl+keyword
     driver.get(url)
-    time.sleep(5)
+    time.sleep(3)
     html_soup = BeautifulSoup(driver.page_source, 'html.parser')
     
     # for writing in csv
     productsDict={}
-
+    with open('./ecommerceClasses.json') as f:
+        classNameAttributes = json.load(f)
+    if keyword in ['mobile','laptop']:
+        classNameAttributes=classNameAttributes["flipkart"][keyword]
+    else :
+        print('Not coded for that')
+        return listOfProducts
     i=0
-    for a in html_soup.findAll('a',href=True, attrs={'class':'_31qSD5'}):
+    for a in html_soup.findAll('a',href=True, attrs={'class':classNameAttributes['card']}):
         i+=1
 
         print("item number {}".format(i),end='\t')
-        # href in _31qSD5 class and href attribute
+        # href in card class and href attribute
         try:
-            name=a.find('div', attrs={'class':'_3wU53n'})
-            price=a.find('div', attrs={'class':'_1vC4OE _2rQ-NK'})
-            rating=a.find('div', attrs={'class':'hGSR34'})
-            
-            imageDiv=a.find('div',attrs={'class':'_3BTv9X'})
+            name=a.find('div', attrs={'class':classNameAttributes['name']})
+            price=a.find('div', attrs={'class':classNameAttributes['price']})
+            rating=a.find('div', attrs={'class':classNameAttributes['rating']})
+            product_page=a['href']
+            product_page='https://www.flipkart.com'+product_page
+
+            imageDiv=a.find('div',attrs={'class':classNameAttributes['image']})
             image_url='default.jpg'
             if imageDiv:
                 allImages=imageDiv.findAll('img',src=True)
@@ -47,13 +56,14 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
             else:
                 print("Name: {} and imageUrl: {}".format(name.text.split('(')[0],image_url),end=' ')
                 print("price: {} ".format(price.text))
-                print("*"*80+"\n")
+                print("\n")
                 
                 productsDict["product-{}".format(i)]={
                     "name":name.text.split('(')[0],
                     "price":price.text,
                     "rating":rating.text,
-                    "image_url":image_url
+                    "image_url":image_url,
+                    "product_page":product_page
                 }
         except:
             pass

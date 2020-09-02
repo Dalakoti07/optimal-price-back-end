@@ -33,7 +33,7 @@ def search_by_scrap(request):
         searchKey=str(request.GET['search'])
         print('scrapping : '+searchKey)
         driver=webdriver.Chrome('./driver')
-        responseFromFunc=getTheData(driver,searchKey)
+        responseFromFunc=getTheData(driver,searchKey,False)
         # driver.close()
         if responseFromFunc:
             serialisedData=ProductSerializer(responseFromFunc,many=True)

@@ -1,0 +1,73 @@
+{
+    "flipkart":{
+        "mobile":{
+            "card":"_31qSD5",
+            "name":"_3wU53n",
+            "price":"_1vC4OE _2rQ-NK",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
+        },
+        "laptop":{
+            "card":"_31qSD5",
+            "name":"_3wU53n",
+            "price":"_1vC4OE _2rQ-NK",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
+        },
+        "electronics":{
+            "card":"_3O0U0u",
+            "nested_card":"_3liAhj",
+            "href_product":"Zhf2z-",
+            "name":"_2cLu-l",
+            "price":"_1vC4OE",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
+        },
+        "books":{
+            "card":"_3O0U0u",
+            "nested_card":"_3liAhj",
+            "href_product":"Zhf2z-",
+            "name":"_2cLu-l",
+            "price":"_1vC4OE",
+            "rating":"hGSR34",
+            "image":"_3BTv9X"
+        },
+        "fashion":{
+            "card":"_3O0U0u",
+            "nested_card":"IIdQZO _1SSAGr",
+            "href_product":"_3dqZjq",
+            "company_name":"_2B_pmu",
+            "name":"_2mylT6",
+            "price":"_1vC4OE",
+            "rating":"",
+            "image":"_3ZJShS _31bMyl"
+        }
+    },
+    "amazon":{
+        "mobile":{
+            "card":"s-include-content-margin s-border-bottom s-latency-cf-section",
+            "name":"a-size-medium a-color-base a-text-normal",
+            "price":"a-price-whole",
+            "href_product":"a-link-normal s-no-outline",
+            "rating":"a-popover-trigger a-declarative",
+            "image":"a-section aok-relative s-image-fixed-height"
+        },
+        "laptop":{
+            "href_product":"a-link-normal s-no-outline",
+            "card":"s-include-content-margin s-border-bottom s-latency-cf-section",
+            "name":"a-size-medium a-color-base a-text-normal",
+            "price":"a-price-whole",
+            "rating":"a-popover-trigger a-declarative",
+            "image":"a-section aok-relative s-image-fixed-height"
+        },
+        "multiple":{
+            "card":"s-expand-height s-include-content-margin s-latency-cf-section",
+            "href_product":"a-link-normal s-no-outline",
+            "company_name":"a-size-base-plus a-color-base",
+            "name":"a-size-base-plus a-color-base a-text-normal",
+            "price":"a-price-whole",
+            "rating":"a-popover-trigger a-declarative",
+            "image":"a-section aok-relative s-image-tall-aspect"
+        }
+    }
+}

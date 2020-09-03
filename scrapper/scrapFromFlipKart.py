@@ -22,9 +22,11 @@ def saveTheResultsToFile(fileName,productsDict):
             each_product=productsDict[d]
             csvWriter.writerow( each_product[detail] for detail in each_product)
 
-def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=False):
+def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=False,takeCompany=False):
     localProductdict=None
-    
+    companyName=None
+    if takeCompany:
+        companyName=eachCardDiv.find('div',attrs={'class':classNameAttributes['company_name']})
     name=eachCardDiv.find('a' if nested else 'div', attrs={'class':classNameAttributes['name']})
     price=eachCardDiv.find('div' if nested else 'div', attrs={'class':classNameAttributes['price']})
     rating=eachCardDiv.find('div' if nested else 'div', attrs={'class':classNameAttributes['rating']})
@@ -34,10 +36,11 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
         if len(product_page)==1:
             product_page=product_page[0]['href']
         else:
-            product_page='NA'
+            product_page=None
     else:
         product_page=eachCardDiv['href']
-    product_page='https://www.flipkart.com'+product_page
+    if product_page:
+        product_page='https://www.flipkart.com'+product_page
     imageDiv=eachCardDiv.find('div',attrs={'class':classNameAttributes['image']})
     image_url='default.jpg'
     if imageDiv:
@@ -46,11 +49,11 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
             image_url=img['src']
     # print("name: {}, price:{} ".format(name.text,price.text))
     localProductdict= {
-        "name":name.text.split('(')[0] if name else "NA",
-        "price":price.text if price else "NA",
-        "rating":rating.text if rating else "NA",
-        "image_url":image_url if image_url else "NA",
-        "product_page":product_page if product_page else "NA"
+        "name":(companyName.text if (takeCompany and companyName) else '')+' ' + (name.text.split('(')[0] if name else "NA") ,
+        "price":price.text if price else "None",
+        "rating":rating.text if rating else "None",
+        "image_url":image_url if image_url else "None",
+        "product_page":product_page if product_page else "None"
     }
     return localProductdict
     
@@ -68,20 +71,31 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
     productsDict={}
     colInRow=False
     typeOfCardInARow=None
-    with open('./ecommerceClasses.json') as f:
+    getCompany=False
+    with open('./ecommerceClassesConfig.json') as f:
         classNameAttributes = json.load(f)
     if keyword in ['mobile','laptop']:
         # webpages with box in each row
         typeOfCardInARow='a'
         classNameAttributes=classNameAttributes["flipkart"][keyword]
-    else :
+    elif ('books' in keyword) or ('electronics' in keyword):
         # webpages with m boxes in each row
         typeOfCardInARow='div'
         colInRow=True
         print('keyword is {}'.format(keyword))
-        classNameAttributes=classNameAttributes["flipkart"][keyword]
-        # return listOfProducts
+        classNameAttributes=classNameAttributes["flipkart"]['books']
+    elif ('shirts' in keyword) or ('jacket' in keyword) or ('shoes' in keyword) or ('jeans' in keyword):
+        getCompany=True
+        typeOfCardInARow='div'
+        colInRow=True
+        print('keyword is {}'.format(keyword))
+        classNameAttributes=classNameAttributes["flipkart"]['fashion']
+    else:
+        print('not handled that')
+        driver.close()
+        return listOfProducts
     i=0
+    # assuming that one product in 1 row => 1 'a' in each row, otherwise m product in each row means div as one row and m 'a' in it
     for eachRow in html_soup.findAll(typeOfCardInARow,href=False if colInRow else True, attrs={'class':classNameAttributes['card']}):
         if not colInRow:
                 i+=1
@@ -95,7 +109,7 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
                 for eachCol in eachRow.findAll('div',attrs={'class':classNameAttributes['nested_card']}):
                     productDict=None
                     i+=1
-                    productDict=extractTheDataFromEachProductCard(eachCardDiv=eachCol,classNameAttributes=classNameAttributes,nested=True)
+                    productDict=extractTheDataFromEachProductCard(eachCardDiv=eachCol,classNameAttributes=classNameAttributes,nested=True,takeCompany=getCompany)
                     if not productDict:
                         continue
                     else:
@@ -125,6 +139,8 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
         saveTheResultsToFile('csvs/flipkart-{}.csv'.format(keyword),productsDict)
 
     print('length of data scrapped: '+str(len(listOfProducts)))
+    if callFromMain:
+        driver.close()
     return listOfProducts
     
     # print('one url '+listOfProducts[0].image_url+listOfProducts[4].image_url)

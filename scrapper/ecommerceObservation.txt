@@ -1,0 +1,23 @@
+Problem 1:
+
+There wont be much intersection between products like between jackets and shoes, its because jackets don't have official
+name like mobile phones, and amazon have named its jackets in different way with some hash, and name-name similarity wont
+work in that case.
+
+Solution 1: (No merge comparison and just render them and let user see the difference)
+
+So android screen would be like this
+Fashion click --> categories (Shoes, jackets,jeans, shirts) and then each category clicked would go to next activity and
+then two comparative recyclerview (sorted increasing order of size), on one side amazon and then another side flipkart
+click on each item would open the webview in android app itself, add a button on the card itself to save it in cart 
+
+Jackets - salomon (both), montrez jackets(female) and ben martin jacket (male)
+Shoes -asian ,addidas, puma
+shirts - young trendz t shirt (men),young trendz t shirt (women) 
+Jeans -Urban Fashion jeans(Men), kotty jeans(Female), flying machine jeans(both)
+
+
+Database Product Object
+Product name
+Company name
+Ecommerce site

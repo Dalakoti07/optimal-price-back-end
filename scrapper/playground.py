@@ -19,7 +19,15 @@ for num in nextSquare():
     if i==20:
         break
     print(num)
-'''
 
 string="i am white "
 print(string.split('(')[0])
+
+'''
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--item", help="enter the item name you want to search on flipkart",type=str)
+args = parser.parse_args()
+print("keyword searched :"+args.item)

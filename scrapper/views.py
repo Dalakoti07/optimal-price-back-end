@@ -46,23 +46,27 @@ def search_by_scrap(request):
         driver=webdriver.Remote(service.service_url)
 
         pagesLimit=10
+        # start the time
+        start_time = time.perf_counter()
+
         # scrap the data from flipkart 
         flipkartItems=flipkartScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from flipkart".format(len(flipkartItems)))
-        serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}-pages-{}.csv".format(5,searchKey))
+        serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
         
         # launch a new tab,its optional
 
         # scrap the data from amazon
         amazonItems=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from amzon".format(len(amazonItems)))
-        serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}-pages-{}.csv".format(5,searchKey))
+        serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
 
         # driver.close()
-        
+        elapsed_time = time.perf_counter() - start_time
+        print(f"searched {searchKey} and got executed in {elapsed_time:0.2f} seconds.")
         if amazonItems and flipkartItems:
             # serialisedData=ProductSerializer(responseFromFunc,many=True)
-            return JsonResponse('success: flipkartItem: {} and amazonItems: {}'.format(len(flipkartItems),len(amazonItems)),safe=False)
+            return JsonResponse('success: flipkartItem: {} and amazonItems: {} and time taken:{} '.format(len(flipkartItems),len(amazonItems),elapsed_time),safe=False)
         else:
             return HttpResponse('Server Error')
 

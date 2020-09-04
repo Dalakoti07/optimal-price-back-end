@@ -7,7 +7,7 @@ class ScrappedItem():
         self.href=href
     
     def __str__(self):
-        return "name:{} and link:{} ".format(self.name,self.href)
+        return "name:{} and rating:{} \n".format(self.name,self.rating)
     def __repr__(self):
-        return "name:{} and link:{} ".format(self.name,self.href)
+        return "name:{} and rating:{} \n".format(self.name,self.rating)
 

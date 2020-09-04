@@ -9,7 +9,7 @@ class Product(models.Model):
     image_url=models.CharField(max_length=500, blank=True, default='')
     # price=models.DecimalField(blank=False,max_digits=19, decimal_places=10)
     price=models.CharField(max_length=10, blank=False, default='')
-    company_name=models.CharField(max_length=20,blank=True,default='')
+    brand_name=models.CharField(max_length=20,blank=True,default='')
     # date_created=datetimeFeild()
     product_category=models.CharField(max_length=20,blank=False,default='')
     ecommerce_company=models.CharField(max_length=20,blank=False,default='')

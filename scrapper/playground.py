@@ -52,6 +52,7 @@ if __name__ == "__main__":
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
 '''
 
+'''
 async def my_task():
     pass
 
@@ -67,3 +68,14 @@ def main():
     loop.close()
 
 main()
+'''
+
+
+
+
+from difflib import SequenceMatcher
+
+one='somethingOne.jpg'
+two='somethingTwo.jpg'
+url= one if not '.svg' in one else two
+print(url)

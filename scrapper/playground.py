@@ -34,7 +34,8 @@ args = parser.parse_args()
 print("keyword searched :"+args.item)
 '''
 import asyncio
-
+# https://stackoverflow.com/questions/44182014/python-lib-beautiful-soup-using-aiohttp
+'''
 async def count():
     print("One")
     await asyncio.sleep(1)
@@ -49,3 +50,20 @@ if __name__ == "__main__":
     asyncio.run(main())
     elapsed = time.perf_counter() - s
     print(f"{__file__} executed in {elapsed:0.2f} seconds.")
+'''
+
+async def my_task():
+    pass
+
+def main():
+    loop = asyncio.new_event_loop()
+    coroutine1 = my_task()
+    coroutine2 = my_task()
+    task1 = loop.create_task(coroutine1)
+    task2 = loop.create_task(coroutine2)
+    loop.run_until_complete(asyncio.wait([task1, task2]))
+    print('task1 result:', task1.result())
+    print('task2 result:', task2.result())
+    loop.close()
+
+main()

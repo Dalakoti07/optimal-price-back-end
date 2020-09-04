@@ -1,5 +1,5 @@
 # default image https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101028/112815904-stock-vector-no-image-available-icon-flat-vector-illustration.jpg?ver=6
-baseurl='https://www.amazon.in/s?k='
+baseurl='https://www.amazon.in/s?k={}&page={}'
 import argparse
 import time
 from bs4 import BeautifulSoup
@@ -9,18 +9,6 @@ import csv
 import json
 import sys, os
 # comment below line for when running from main 
-# from .models import Product
-
-def saveTheResultsToFile(fileName,productsDict):
-    with open(fileName, 'w', newline='') as csvfile:
-        if len(productsDict)==0:
-            return
-        csvWriter = csv.writer(csvfile, delimiter=',',quoting=csv.QUOTE_MINIMAL)
-        print("len of product dict: "+str(len(productsDict)))
-        for d in productsDict:
-            # print("writing {}".format(d))
-            each_product=productsDict[d]
-            csvWriter.writerow( each_product[detail] for detail in each_product)
 
 def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=False,takeCompany=False):
     localProductdict=None
@@ -46,7 +34,7 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
             image_url=img['src']
     # print("name: {}, price:{} ".format(name.text,price.text))
     localProductdict= {
-        "name":(companyName.text if (takeCompany and companyName) else '')+' ' + (name.text.split('(')[0] if name else "NA") ,
+        "name":(companyName.text if (takeCompany and companyName) else '')+' ' + (name.text if name else "NA") ,
         "price":price.text if price else "None",
         "rating":rating.text if rating else "None",
         "image_url":image_url if image_url else "None",
@@ -55,10 +43,10 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     return localProductdict
 
 #function used for scrapping in getthedata working for only mobiles
-def getTheData(driver,keyword='mobile',callFromMain=True):
+def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     listOfProducts=[]
     
-    url = baseurl+keyword
+    url = baseurl.format(keyword,page_number)
     driver.get(url)
     time.sleep(3)
     html_soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -73,8 +61,12 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
     typeOfCardInARow=None
     getCompany=False
 
-    with open('./ecommerceClassesConfig.json') as f:
-        classNameAttributes = json.load(f)
+    if callFromMain:
+        with open('./ecommerceClassesConfig.json') as f:
+            classNameAttributes = json.load(f)
+    else:
+        with open('./scrapper/ecommerceClassesConfig.json') as f:
+            classNameAttributes = json.load(f)
     if (keyword in ['mobile','laptop']) or ('books' in keyword):
         # webpages with box in each row
         typeOfCardInARow='div'
@@ -118,22 +110,27 @@ def getTheData(driver,keyword='mobile',callFromMain=True):
             productsDict["product-{}".format(i)]=productDict
         else:
             print("django running saving {}-product.....".format(i))
-            pass
-            # product=Product(name=name.text,rating=rating.text,image_url=image_url,price=price.text)
-            # product.save()
-            listOfProducts.append(product)
+            from .ScrappedItem import ScrappedItem
+            if productDict:
+                product=ScrappedItem(name=productDict['name'],rating=productDict['rating'],
+                        image_url=productDict['image_url'],price=productDict['price'],href=productDict['product_page'])
+                listOfProducts.append(product)
         print("\n")
 
     if callFromMain:
+        from ScrapperUtils import saveTheResultsToFile
         saveTheResultsToFile('csvs/amazon-{}.csv'.format(keyword),productsDict)
 
     print('length of data scrapped: '+str(len(listOfProducts)))
     if callFromMain:
         driver.close()
     return listOfProducts
-    
-    # print('one url '+listOfProducts[0].image_url+listOfProducts[4].image_url)
-    
+
+def scrapMultiplePages(driver,keyword,pageCount):
+    productsFromAllPages=[]
+    for p in range(0,pageCount):
+        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p)
+    return productsFromAllPages
 
 if __name__ == "__main__":
     from selenium import webdriver

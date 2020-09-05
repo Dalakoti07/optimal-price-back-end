@@ -60,6 +60,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     colInRow=False
     typeOfCardInARow=None
     getCompany=False
+    product_category=None
 
     if callFromMain:
         with open('./ecommerceClassesConfig.json') as f:
@@ -71,6 +72,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         # webpages with box in each row
         typeOfCardInARow='div'
         classNameAttributes=classNameAttributes["amazon"]['mobiles']
+        product_category = 'mobiles' if (('mobiles' in keyword) or ('phones' in keyword)) else ('computer' if ('laptops' in keyword) else 'books')
     elif keyword in ['electronics']:
         # webpages with m boxes in each row
         typeOfCardInARow='div'
@@ -83,6 +85,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         colInRow=True
         print('keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["amazon"]['multiple']
+        product_category='fashion'
     else:
         print('not handled that')
         driver.close()
@@ -124,13 +127,14 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     print('length of data scrapped: '+str(len(listOfProducts)))
     if callFromMain:
         driver.close()
-    return listOfProducts
+    return (listOfProducts,product_category)
 
 def scrapMultiplePages(driver,keyword,pageCount):
     productsFromAllPages=[]
     for p in range(0,pageCount):
-        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
-    return productsFromAllPages
+        received_items,product_category = scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
+        productsFromAllPages= list(received_items) + productsFromAllPages
+    return (productsFromAllPages,product_category)
 
 if __name__ == "__main__":
     from selenium import webdriver

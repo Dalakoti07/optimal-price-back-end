@@ -65,6 +65,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     colInRow=False
     typeOfCardInARow=None
     getCompany=False
+    product_category=None
     if callFromMain:
         with open('./ecommerceClassesConfig.json') as f:
             classNameAttributes = json.load(f)
@@ -76,18 +77,21 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         # webpages with box in each row
         typeOfCardInARow='a'
         classNameAttributes=classNameAttributes["flipkart"]['mobiles']
+        product_category = 'mobiles' if (('mobiles' in keyword) or ('phones' in keyword)) else 'computer'
     elif ('books' in keyword) or ('electronics' in keyword):
         # webpages with m boxes in each row
         typeOfCardInARow='div'
         colInRow=True
         print('keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["flipkart"]['books']
+        product_category='books' if ('books' in keyword) else 'electronics'
     elif ('shirts' in keyword) or ('jacket' in keyword) or ('shoes' in keyword) or ('jeans' in keyword):
         getCompany=True
         typeOfCardInARow='div'
         colInRow=True
         print('keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["flipkart"]['fashion']
+        product_category='fashion'
     else:
         print('not handled that')
         # driver.close()
@@ -139,15 +143,16 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         saveTheResultsToFile('csvs/flipkart-{}.csv'.format(keyword),productsDict)
 
     print('length of data scrapped: '+str(len(listOfProducts)))
-    return listOfProducts
+    return (listOfProducts,product_category)
     
     # print('one url '+listOfProducts[0].image_url+listOfProducts[4].image_url)
 
 def scrapMultiplePages(driver,keyword,pageCount):
     productsFromAllPages=[]
     for p in range(0,pageCount):
-        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
-    return productsFromAllPages
+        received_items,product_category = scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
+        productsFromAllPages= list(received_items) + productsFromAllPages 
+    return productsFromAllPages,product_category
 
 if __name__ == "__main__":
     from selenium import webdriver

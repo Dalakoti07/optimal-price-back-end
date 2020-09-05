@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage
-from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList
+from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 
 # selenium and web scrapping stuff
@@ -55,6 +55,7 @@ def returnJsonResponseFromProductList(productList,totalTime):
 
 def search_by_scrap(request):
     if request.method=='GET':
+        
         searchKey=str(request.GET['search'])
         pagesLimit=None
         try:
@@ -73,27 +74,36 @@ def search_by_scrap(request):
         start_time = time.perf_counter()
         print('scrapping :{} with {} pages '.format(searchKey,pagesLimit))
         # scrap the data from flipkart 
-        flipkartItems=flipkartScrapMultiplePage(driver,searchKey,pagesLimit)
+        flipkartItems,category_type=flipkartScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from flipkart".format(len(flipkartItems)))
-        serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
+        # serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
         
         # launch a new tab,to run amazon and python query consequently
 
         # scrap the data from amazon
-        amazonItems=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
+        amazonItems,category_type=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from amzon".format(len(amazonItems)))
-        serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
+        # serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
 
         # driver.close()
         elapsed_time = time.perf_counter() - start_time
+        if category_type=='fashion':
+            saveToDB(amazonItems)
+            saveToDB(flipkartItems)
+            return JsonResponse(returnJsonResponseFromProductList(list(amazonItems)+list(flipkartItems),totalTime=elapsed_time),safe=False)
         print(f"searched {searchKey} and got executed in {elapsed_time:0.2f} seconds.")
         if amazonItems and flipkartItems:
             # serialisedData=ProductSerializer(responseFromFunc,many=True)
-            merged_list=mergeList(amazonList=amazonItems,flipkartList=flipkartItems)
+            merged_list=mergeList(amazonList=amazonItems,flipkartList=flipkartItems,categoryType=category_type)
             saveToDB(merged_list)
             return JsonResponse( returnJsonResponseFromProductList( merged_list,totalTime=elapsed_time),safe=False)
         else:
             return HttpResponse('Server Error')
+        
+
+        # unit testing for db
+        # saveToDB(mergeList(deserialiseTheListFromCSV("./scrapper/csvs/flipkart-django-5_pages-samsung phones.csv"),deserialiseTheListFromCSV("./scrapper/csvs/amazon-django-5_pages-samsung phones.csv"),categoryType='mobiles'))
+        # return JsonResponse('it should be done',safe=False)
 
 def search_in_db(request):
     if request.method=='GET':
@@ -112,6 +122,16 @@ def viewAllProducts(request):
         return JsonResponse(serializer.data, safe=False)
     else:
         HttpResponseBadRequest('Method Not allowed ')
+
+def searchByCategory(request):
+    if request.method=='GET':
+        category_name=str(request.GET['category'])
+        print('category key: '+category_name)
+        filtered_products=Product.objects.filter(product_category=category_name)
+        serialized_data=ProductSerializer(filtered_products,many=True)
+        return JsonResponse(serialized_data.data,safe=False)
+    else:
+        return HttpResponseBadRequest('Method Not allowed')
 
 '''
     data = JSONParser().parse(request)

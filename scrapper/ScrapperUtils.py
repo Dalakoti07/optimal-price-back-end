@@ -2,6 +2,7 @@ if __name__ == "__main__":
     from ScrappedItem import ScrappedItem
 else:
     from .ScrappedItem import ScrappedItem
+    from .models import Product
 
 import csv
 from difflib import SequenceMatcher
@@ -27,13 +28,15 @@ def createNewItem(fi,ai,categorytype='simple'):
     name=name.strip()
     rating=fi.rating if fi.rating else ai.rating.split('out')[0]
     image_url=fi.image_url if not '.svg' in fi.image_url else ai.image_url
-
-    if ai.price:
-        price=int(ai.price.replace(',','').replace('₹',''))
-    elif fi.price:
-        price=int(fi.price.replace('₹','').replace(',',''))
-    else:
-        price=None
+    price=None
+    try:
+        if ai.price:
+            price=int(ai.price.replace(',','').replace('₹',''))
+        elif fi.price:
+            price=int(fi.price.replace('₹','').replace(',',''))
+    except Exception as e:
+        print("Error in processing price ")
+        print(e)
 
     item= ScrappedItem(name=name,rating=rating,image_url= image_url
         ,price= price,href=None)
@@ -45,7 +48,7 @@ def createNewItem(fi,ai,categorytype='simple'):
     # validate data before saving it in db
     return item
 
-def mergeList(amazonList,flipkartList):
+def mergeList(amazonList,flipkartList,categoryType):
     # merge the list
     mergedItems=[]
     for fi in flipkartList:
@@ -57,7 +60,7 @@ def mergeList(amazonList,flipkartList):
             currentName=cleanTheName(ai.name.strip())
             if SequenceMatcher(None, nameToBeSearched, currentName).ratio() >=0.7:
                 # create mergedObject
-                new_item=createNewItem(fi,ai)
+                new_item=createNewItem(fi,ai,categorytype=categoryType)
                 # remove ai from amazon-list so that it cannot be clubbed with anyone
                 del amazonList[idx]
                 mergedItems.append(new_item)
@@ -123,3 +126,15 @@ def deserialiseTheListFromCSV(fileName):
 # print("len of intersection item: {}".format(len(mList)))
 
 # saveTheMergeListIntoCSV(mList,"./csvs/merged-product-amaon-flipkart.csv")
+
+def saveToDB(merged_list):
+    for m in merged_list:
+        if m.name==None or m.price==None:
+            continue
+        try:
+            product =Product(name=m.name,rating=m.name,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company='both',amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
+            product.save()
+        except Exception as e:
+            print("got the error while saving",end='')
+            print(e)
+        

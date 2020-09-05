@@ -9,5 +9,6 @@ from scrapper import views
 urlpatterns = [
     url(r'^search_in_db',views.search_in_db),
     url(r'^scrap', views.search_by_scrap),
+    url(r'^search',views.searchByCategory),
     url(r'^',views.viewAllProducts),
 ]

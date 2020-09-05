@@ -6,15 +6,13 @@
     return json response on general api search
     10 mobile brands using jsonConfig and see the common stuff
     profelerate the db, by making get requests and save data for mobile, fashion, laptops, 
-    mobile (4 pages)- asus, one plus, realme, (apple), oppo ,infinix, motorola, redmi ,samsung, honor 
+    mobile (4 pages)- asus, oneplus, realme, (apple), oppo ,infinix, motorola, redmi ,samsung, honor 
         Scrap 150% of pages used in flipkart as amzon as less product per page
 
-    fashion (10 pages) - see observation
-    laptops (6 pages) - asus, hp, lenovo, msi, acer, apple, dell 
-    books 
-    its taking 24 seconds for iphone mobiles for 2 pages each on 
-
-6th september  
+6th september
+    why double products count when returned by serialiser
+    price are coming null and thus most of data is being thrown away ,debug it
+    avoid the duplicacy of item by using name as hash and making it unique
     why is there difference between serialised csv and api response 
     # https://stackoverflow.com/questions/44182014/python-lib-beautiful-soup-using-aiohttp
     # https://stackoverflow.com/questions/34829329/how-to-open-a-link-in-new-tab-chrome-using-selenium-webdriver
@@ -22,3 +20,32 @@
     try this asynchronously
     health and fitness
     electronics
+
+fashion (10 pages) - see observation
+        // no comparison in fashion, just options side by side in ascending order
+        Jackets - 
+            salomon (both 1 page only in both amazon and flipkart)
+            montrez jackets(female) 1 page only getting no brand_name attribute error
+            ben martin jacket (male)
+        Shoes 
+            asian same brand_name error 
+            addidas 
+            puma
+        shirts - young trendz t shirt (men),young trendz t shirt (women) 
+        Jeans -Urban Fashion jeans(Men), kotty jeans(Female), flying machine jeans(both)
+
+    laptops (6 pages) - 
+        asus 3 pages noting in common
+        hp, lenovo, msi, acer, apple, dell 
+    books 
+        self help - 5 pages - 13 common items
+        best seller 
+    its taking 24 seconds for iphone mobiles for 2 pages each on 
+
+product categories - 
+    mobiles
+    electronics
+    books
+    fashion
+    health
+    computers

@@ -108,8 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_L10N = True
@@ -138,3 +136,5 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 
 SELENIUM_DRIVER='./scarpper/driver.exe'
+
+TIME_ZONE =  'Asia/Calcutta'

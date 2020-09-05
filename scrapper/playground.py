@@ -73,9 +73,55 @@ main()
 
 
 
-from difflib import SequenceMatcher
+# from difflib import SequenceMatcher
 
-one='somethingOne.jpg'
-two='somethingTwo.jpg'
-url= one if not '.svg' in one else two
-print(url)
+'''
+class Item:
+    def __init__(self,name,tag):
+        self.name=name
+        self.tag=tag
+    def __repr__(self):
+        return "name: {} ".format(self.name)
+
+list1=[Item("one","health"),Item("two","beauty")]
+print(list1)
+
+for i, o in enumerate(list1):
+    if o.name == 'one' or o.name=='two':
+        del list1[i]
+        break
+print(list1)
+'''
+
+
+async def saveToDB():
+    print('saving to db')
+    await asyncio.sleep(2)
+    print('saved to db !!!')
+
+async def getTheResponse():
+    await saveToDB()
+    print("retuning value ")
+    return 'value'
+
+loop = asyncio.get_event_loop()
+asyncio.ensure_future(getTheResponse())
+# asyncio.ensure_future(saveToDB())
+loop.run_forever()
+
+'''
+async def async_foo():
+    print("async_foo started")
+    await asyncio.sleep(5)
+    print("async_foo done")
+
+async def main():
+    asyncio.ensure_future(async_foo())  # fire and forget async_foo()
+    print('Do some actions 1')
+    await asyncio.sleep(5)
+    print('Do some actions 2')
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
+'''
+

@@ -1,0 +1,24 @@
+4th september
+    make some Done
+    general webs scrapping from amzon and flipkart 
+
+5th september
+    return json response on general api search
+    10 mobile brands using jsonConfig and see the common stuff
+    profelerate the db, by making get requests and save data for mobile, fashion, laptops, 
+    mobile (4 pages)- asus, one plus, realme, (apple), oppo ,infinix, motorola, redmi ,samsung, honor 
+        Scrap 150% of pages used in flipkart as amzon as less product per page
+
+    fashion (10 pages) - see observation
+    laptops (6 pages) - asus, hp, lenovo, msi, acer, apple, dell 
+    books 
+    its taking 24 seconds for iphone mobiles for 2 pages each on 
+
+6th september  
+    why is there difference between serialised csv and api response 
+    # https://stackoverflow.com/questions/44182014/python-lib-beautiful-soup-using-aiohttp
+    # https://stackoverflow.com/questions/34829329/how-to-open-a-link-in-new-tab-chrome-using-selenium-webdriver
+    # https://docs.djangoproject.com/en/3.1/topics/async/
+    try this asynchronously
+    health and fitness
+    electronics

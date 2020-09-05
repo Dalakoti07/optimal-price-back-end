@@ -10,12 +10,11 @@ from rest_framework.parsers import JSONParser
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage
-from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV
+from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 
 # selenium and web scrapping stuff
 import argparse
-baseurl='https://www.flipkart.com/search?q='
 import time
 from bs4 import BeautifulSoup
 from requests import get
@@ -34,27 +33,51 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 '''
+def returnJsonResponseFromProductList(productList,totalTime):
+    data=[]
+    for p in productList:
+        data.append({
+            "name":p.name,
+            "rating":p.rating,
+            "image_url":p.image_url,
+            "price":p.price,
+            "brand_name":p.brand_name,
+            "amazon_link":p.amazon_link,
+            "flipkart_link":p.flipkart_link,
+            "product_category":p.product_category
+        })
+    response={
+        "time-taken":str(totalTime),
+        "length":len(data),
+        "data":data
+    }
+    return response
 
 def search_by_scrap(request):
     if request.method=='GET':
         searchKey=str(request.GET['search'])
-        print('scrapping : '+searchKey)
+        pagesLimit=None
+        try:
+            pagesLimit=int(request.GET['pages'])
+        except Exception as e:
+            print(e)
         
         # start service of selenium and prepare the driver
         service = Service('./driver')
         service.start()
         driver=webdriver.Remote(service.service_url)
 
-        pagesLimit=10
+        if not pagesLimit:
+            pagesLimit=5
         # start the time
         start_time = time.perf_counter()
-
+        print('scrapping :{} with {} pages '.format(searchKey,pagesLimit))
         # scrap the data from flipkart 
         flipkartItems=flipkartScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from flipkart".format(len(flipkartItems)))
         serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
         
-        # launch a new tab,its optional
+        # launch a new tab,to run amazon and python query consequently
 
         # scrap the data from amazon
         amazonItems=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
@@ -66,7 +89,9 @@ def search_by_scrap(request):
         print(f"searched {searchKey} and got executed in {elapsed_time:0.2f} seconds.")
         if amazonItems and flipkartItems:
             # serialisedData=ProductSerializer(responseFromFunc,many=True)
-            return JsonResponse('success: flipkartItem: {} and amazonItems: {} and time taken:{} '.format(len(flipkartItems),len(amazonItems),elapsed_time),safe=False)
+            merged_list=mergeList(amazonList=amazonItems,flipkartList=flipkartItems)
+            saveToDB(merged_list)
+            return JsonResponse( returnJsonResponseFromProductList( merged_list,totalTime=elapsed_time),safe=False)
         else:
             return HttpResponse('Server Error')
 

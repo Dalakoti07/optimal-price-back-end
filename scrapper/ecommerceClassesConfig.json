@@ -1,13 +1,13 @@
 {
     "flipkart":{
-        "mobile":{
+        "mobiles":{
             "card":"_31qSD5",
             "name":"_3wU53n",
             "price":"_1vC4OE _2rQ-NK",
             "rating":"hGSR34",
             "image":"_3BTv9X"
         },
-        "laptop":{
+        "laptops":{
             "card":"_31qSD5",
             "name":"_3wU53n",
             "price":"_1vC4OE _2rQ-NK",
@@ -44,7 +44,7 @@
         }
     },
     "amazon":{
-        "mobile":{
+        "mobiles":{
             "card":"s-include-content-margin s-border-bottom s-latency-cf-section",
             "name":"a-size-medium a-color-base a-text-normal",
             "price":"a-price-whole",
@@ -52,7 +52,7 @@
             "rating":"a-popover-trigger a-declarative",
             "image":"a-section aok-relative s-image-fixed-height"
         },
-        "laptop":{
+        "laptops":{
             "href_product":"a-link-normal s-no-outline",
             "card":"s-include-content-margin s-border-bottom s-latency-cf-section",
             "name":"a-size-medium a-color-base a-text-normal",

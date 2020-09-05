@@ -52,7 +52,11 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     
     url = baseurl.format(keyword,page_number)
     print("fetching the url..........{}".format(url))
-    driver.get(url)
+    try :
+        driver.get(url)
+    except Exception as e:
+        print("got an dirver exception return")
+        return listOfProducts    
     time.sleep(1)
     html_soup = BeautifulSoup(driver.page_source, 'html.parser')
     
@@ -68,10 +72,10 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         with open('./scrapper/ecommerceClassesConfig.json') as f:
             classNameAttributes = json.load(f)
 
-    if ('mobile' in keyword) or ('laptop' in keyword):
+    if ('mobiles' in keyword) or ('laptops' in keyword) or ('phones' in keyword):
         # webpages with box in each row
         typeOfCardInARow='a'
-        classNameAttributes=classNameAttributes["flipkart"]['mobile']
+        classNameAttributes=classNameAttributes["flipkart"]['mobiles']
     elif ('books' in keyword) or ('electronics' in keyword):
         # webpages with m boxes in each row
         typeOfCardInARow='div'
@@ -86,7 +90,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         classNameAttributes=classNameAttributes["flipkart"]['fashion']
     else:
         print('not handled that')
-        driver.close()
+        # driver.close()
         return listOfProducts
     i=0
     # assuming that one product in 1 row => 1 'a' in each row, otherwise m product in each row means div as one row and m 'a' in it
@@ -142,7 +146,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
 def scrapMultiplePages(driver,keyword,pageCount):
     productsFromAllPages=[]
     for p in range(0,pageCount):
-        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p)
+        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
     return productsFromAllPages
 
 if __name__ == "__main__":
@@ -158,5 +162,6 @@ if __name__ == "__main__":
     driver=webdriver.Remote(service.service_url) 
     
     scrapAPage(driver,args.item)
+    driver.close()
 else:
     print("Executed when imported")

@@ -5,15 +5,15 @@ else:
 
 import csv
 from difflib import SequenceMatcher
-def cleanDataAndGetTokens(currentString):
+def cleanTheName(currentString):
     currentString=currentString.replace('(','')
     currentString=currentString.replace(')','')
     currentString=currentString.replace(',','')
-    wordsToken=currentString.split(' ')
-    return wordsToken
+    return currentString
 
 def tokensEqual(tokens1,tokens2):
     # make custom
+    # ToDo
     pass
 
 def validateData():
@@ -28,7 +28,12 @@ def createNewItem(fi,ai,categorytype='simple'):
     rating=fi.rating if fi.rating else ai.rating.split('out')[0]
     image_url=fi.image_url if not '.svg' in fi.image_url else ai.image_url
 
-    price=int(ai.price.replace(',','').replace('₹','')) if ai.price else (int(fi.price.replace('₹','').replace(',','')) if fi.price else None)
+    if ai.price:
+        price=int(ai.price.replace(',','').replace('₹',''))
+    elif fi.price:
+        price=int(fi.price.replace('₹','').replace(',',''))
+    else:
+        price=None
 
     item= ScrappedItem(name=name,rating=rating,image_url= image_url
         ,price= price,href=None)
@@ -44,17 +49,22 @@ def mergeList(amazonList,flipkartList):
     # merge the list
     mergedItems=[]
     for fi in flipkartList:
-        nameToBeSearched=cleanDataAndGetTokens(fi.name.strip())
+        nameToBeSearched=cleanTheName(fi.name.strip())
+        nameToBeSearched=nameToBeSearched[:50]
         # remove useless chars
+        idx=0
         for ai in amazonList:
-            currentName=cleanDataAndGetTokens(ai.name.strip())
+            currentName=cleanTheName(ai.name.strip())
             if SequenceMatcher(None, nameToBeSearched, currentName).ratio() >=0.7:
                 # create mergedObject
                 new_item=createNewItem(fi,ai)
-
+                # remove ai from amazon-list so that it cannot be clubbed with anyone
+                del amazonList[idx]
                 mergedItems.append(new_item)
                 # break because not more than one match for each item
                 break
+            else:
+                idx+=1
     return mergedItems
     
 def saveTheResultsToFile(fileName,productsDict):
@@ -109,8 +119,7 @@ def deserialiseTheListFromCSV(fileName):
             itemList.append(product)
     return itemList
 
+# mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-5_pages-samsung phones.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-5_pages-samsung phones.csv"))
+# print("len of intersection item: {}".format(len(mList)))
 
-mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-10_pages-mobile.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-10_pages-mobile.csv"))
-print("len of intersection item: {}".format(len(mList)))
-
-saveTheMergeListIntoCSV(mList,"./csvs/merged-mobile-amaon-flipkart.csv")
+# saveTheMergeListIntoCSV(mList,"./csvs/merged-product-amaon-flipkart.csv")

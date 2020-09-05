@@ -67,10 +67,10 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     else:
         with open('./scrapper/ecommerceClassesConfig.json') as f:
             classNameAttributes = json.load(f)
-    if (keyword in ['mobile','laptop']) or ('books' in keyword):
+    if ('mobiles' in keyword) or ('laptops' in keyword) or ('books' in keyword) or ('phones' in keyword):
         # webpages with box in each row
         typeOfCardInARow='div'
-        classNameAttributes=classNameAttributes["amazon"]['mobile']
+        classNameAttributes=classNameAttributes["amazon"]['mobiles']
     elif keyword in ['electronics']:
         # webpages with m boxes in each row
         typeOfCardInARow='div'
@@ -129,7 +129,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
 def scrapMultiplePages(driver,keyword,pageCount):
     productsFromAllPages=[]
     for p in range(0,pageCount):
-        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p)
+        productsFromAllPages = productsFromAllPages + scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
     return productsFromAllPages
 
 if __name__ == "__main__":

@@ -14,8 +14,8 @@ class Product(models.Model):
     # date_created=datetimeFeild()
     product_category=models.CharField(max_length=20,blank=False,default='')
     ecommerce_company=models.CharField(max_length=20,blank=False,default='')
-    amazon_link=models.CharField(max_length=500,blank=True,default='')
-    flipkart_link=models.CharField(max_length=500,blank=True,default='')
+    amazon_link=models.CharField(max_length=500,null=True,default='')
+    flipkart_link=models.CharField(max_length=500,null=True,default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

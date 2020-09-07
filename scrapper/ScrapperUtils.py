@@ -1,8 +1,12 @@
 if __name__ == "__main__":
     from ScrappedItem import ScrappedItem
 else:
+    # call from django,
+    # but it can be call from flipkart or amazon scrapper
+    # commit it when not using django
     from .ScrappedItem import ScrappedItem
     from .models import Product
+    pass
 
 import csv
 from difflib import SequenceMatcher
@@ -30,10 +34,10 @@ def createNewItem(fi,ai,categorytype='simple'):
     image_url=fi.image_url if not '.svg' in fi.image_url else ai.image_url
     price=None
     try:
-        if ai.price:
-            price=int(ai.price.replace(',','').replace('₹',''))
-        elif fi.price:
+        if fi.price:
             price=int(fi.price.replace('₹','').replace(',',''))
+        elif ai.price:
+            price=int(ai.price.replace(',','').replace('₹',''))
     except Exception as e:
         print("Error in processing price ")
         print(e)
@@ -47,6 +51,24 @@ def createNewItem(fi,ai,categorytype='simple'):
     item.product_category=categorytype
     # validate data before saving it in db
     return item
+
+def pseudoMergeIt(itemList,ecommerce_site,categoryType):
+    print('pseudo merging it ')
+    finalizeItems=[]
+    for item in itemList:
+        newItem= ScrappedItem(name=item.name,rating=item.rating,image_url=item.image_url,price=item.price,href=None)
+        newItem.brand_name=newItem.name.split(' ')[0]
+        if ecommerce_site=='amazon':
+            newItem.amazon_link=item.href
+            newItem.flipkart_link=None
+            newItem.ecommerce_company='amazon'
+        else:
+            newItem.flipkart_link=item.href
+            newItem.amazon_link=None
+            newItem.ecommerce_company='flipkart'
+        newItem.product_category=categoryType
+        finalizeItems.append(newItem)
+    return finalizeItems
 
 def mergeList(amazonList,flipkartList,categoryType):
     # merge the list
@@ -122,19 +144,32 @@ def deserialiseTheListFromCSV(fileName):
             itemList.append(product)
     return itemList
 
-# mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-5_pages-samsung phones.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-5_pages-samsung phones.csv"))
-# print("len of intersection item: {}".format(len(mList)))
 
-# saveTheMergeListIntoCSV(mList,"./csvs/merged-product-amaon-flipkart.csv")
-
-def saveToDB(merged_list):
+def saveToDB(merged_list,save=True):
+    i=0
     for m in merged_list:
         if m.name==None or m.price==None:
             continue
-        try:
-            product =Product(name=m.name,rating=m.name,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company='both',amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
-            product.save()
-        except Exception as e:
-            print("got the error while saving",end='')
-            print(e)
-        
+        if save:
+            try:
+                ecommerce_company_val='both'
+                if hasattr(m, 'ecommerce_company'):
+                    ecommerce_company_val=m.ecommerce_company
+                product =Product(name=m.name,rating=m.name,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company=ecommerce_company_val,amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
+                product.save()
+                i+=1
+            except Exception as e:
+                print("got the error while saving",end='')
+                print(e)
+        else:
+            # smiluation
+            i+=1
+    print(f'items saved in db {i}')
+
+'''
+mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-2_pages-realme phones.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-2_pages-realme phones.csv"),categoryType='phones')
+print("len of intersection item: {}".format(len(mList)))
+saveToDB(mList)
+
+saveTheMergeListIntoCSV(mList,"./csvs/merged-product-amaon-flipkart.csv")
+'''

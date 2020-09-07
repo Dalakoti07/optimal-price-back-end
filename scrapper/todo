@@ -9,17 +9,19 @@
     mobile (4 pages)- asus, oneplus, realme, (apple), oppo ,infinix, motorola, redmi ,samsung, honor 
         Scrap 150% of pages used in flipkart as amzon as less product per page
 
-6th september
-    why double products count when returned by serialiser
-    price are coming null and thus most of data is being thrown away ,debug it
-    avoid the duplicacy of item by using name as hash and making it unique
-    why is there difference between serialised csv and api response 
+7th september
+    @done not getting brand names in fashion products
+    @done avoid the duplicacy of item by using name as hash and making it unique
+    @done why double products count when returned by serialiser
+    @done price are coming null and thus most of data is being thrown away ,debug it
+    @done why is there difference between serialised csv and api response 
     # https://stackoverflow.com/questions/44182014/python-lib-beautiful-soup-using-aiohttp
     # https://stackoverflow.com/questions/34829329/how-to-open-a-link-in-new-tab-chrome-using-selenium-webdriver
     # https://docs.djangoproject.com/en/3.1/topics/async/
-    try this asynchronously
     health and fitness
     electronics
+
+    sometime its taking too much time to fetch the data, set the timeout, see if u cam make call again on same api
 
 fashion (10 pages) - see observation
         // no comparison in fashion, just options side by side in ascending order
@@ -42,6 +44,10 @@ fashion (10 pages) - see observation
         best seller 
     its taking 24 seconds for iphone mobiles for 2 pages each on 
 
+8th september
+    flipkart product name (in jackets ) has same name and thus we are getting name conflicts and thus most of data is getting lost
+    make sub categories in fashion like shirts, jackets
+
 product categories - 
     mobiles
     electronics
@@ -49,3 +55,5 @@ product categories -
     fashion
     health
     computers
+
+try this asynchronously

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        .bottomright {
+            position: absolute;
+            bottom: 8px;
+            right: 16px;
+            font-size: 18px;
+        }
+        #footer-a{
+            display: inline-block;
+            width: 40%;
+            font-size: 12px;
+        }
+        #footer-b{
+            font-size: 12px;
+            display: inline-block;
+            width: 40%;
+        }
+        #main{
+            position: relative;
+            margin: auto;
+            width: 80%;
+        }
+        #tc{
+            font-size: 10px;
+        }
+
+        td[colspan="2"] {
+            text-align: right;
+        }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        table.center {
+            margin-left:auto; 
+            margin-right:auto;
+        }
+        th {
+          border: 1px solid #181111;
+          text-align: left;
+          padding: 8px;
+          background-color: #181111;
+        }
+        td {
+          border: 1px solid #181111;
+          text-align: left;
+          padding: 8px;
+        }
+        tr{
+          background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <h1>TAX INVOICE</h1>
+        <h3>No:- 9643957240 | Issue Date 23.09.2020</h3>
+        <hr>
+        <h3>Alliance Broadband Services Pvt. Ltd.</h3>
+        <br>
+    
+        <div >
+            <p>City: <b>Noida</b></p>
+            <p>Address: <b>UNIT NO-11 G-14, 1ST FLOOR SECTOR-3, GAUTAM BUDDHA NAGAR, UTTAR PRADESH, NOIDA,201301  </b></p>
+            <p>Pan No: <b>AAECA3151B</b></p>
+            <p>GST no: <b>09AAECA3151B1Z8</b></p>
+            <p>State: <b>Uttar Pradeshcode: 09</b></p>
+            <p>SAC No: <b>998422</b></p>
+            <p>Phone: 033-71002000, Toll Free No: 1800 1200 300 www.alliancebroadband.co.in</p>
+        </div>
+        <hr>
+        <br>
+    
+        <h3><i>TO:</i> <b>HARISH CHANDRA GUPT</b></h3>
+        <div>
+            <p>Address: <b>JHANGA HATA KUSHINAGAR UTTAR PRADESH, PIN-274203 9779889523 </b></p>
+            <p>State: <b>Uttar Pradeshcode: 09</b></p>
+        </div>
+    
+        <!-- table -->
+        <table class="center">
+            <tr>
+              <th><font color="#fffff">N</font></th>
+              <th><font color="#fffff"> Description of goods or Services</font></th>
+              <th><font color="#fffff"> Amount</font></th>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>free "BROWSE+" (23.07.2020 to 21.08.2020)"</td>
+              <td>400.000</td>
+            </tr>
+            <tr>
+              <td colspan="2">Total Amount</td>
+              <td>400</td>
+            </tr>
+            <tr>
+                <td colspan="2">GST (9%)</td>
+                <td>36.00</td>
+            </tr>
+            <tr>
+                <td colspan="2">SGST (9%)</td>
+                <td>36.00</td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>Total</b></td>
+                <td><b>472.00</b></td>
+            </tr>
+            <tr>
+                <td colspan="2">Rounded Off</td>
+                <td><b>472</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">IN WORDS: INR Four hundred and seventy two rupee</td>
+            </tr>
+            <tr>
+                <td colspan="3">Payment method: [_] Cheque [_] D.D/P.O. [_] Cash</td>
+            </tr>
+            <tr>
+                <td colspan="3">Date of occurrence of chargeable event / payment: 23.07.2020 / 23.07.2020</td>
+            </tr>
+          </table>
+    
+          <!-- terns abd conditions -->
+          <p id="tc">TERMS AND CONDITIONS</p>
+          <p id="tc">1) It will be deemed that you have accepted this Invoice in full in the event you have not lodged any written objection with us within 20 days of receipt of this Invoice.</p>
+          <p id="tc">2) To avoid disconnection of service you are requested to pay the full amount by the due date mentioned in the invoice. An interest of 18% per annum will be charged on the amountremaining unpaid after the due date.</p>
+          <p id="tc">3) All Cheques/Demand Drafts in payment of Invoice should be drawn in favour of "Alliance Broadband Services Pvt. Ltd.</p>
+          <p id="tc">4) Kindly mention invoice number along with your payment to ensure correct and timely processing.</p> 
+          <p id="tc">5) Cheque Return Charges of Rs. 250 would be charged extra</p> 
+          <p id="tc">6) E. & O. E.</p>
+    
+          <!-- footer -->
+          <div id="footer-a">
+              <p>Issuer: ABSPL_Hyper Computer[Uttar Pradesh]-07</p>
+              <img src="./signature.png" width="100px" height="30px" alt="singature">
+          </div>
+          <div id="footer-b">
+            <p>Receiver:</p>  
+            <p>Client ID:</p> 
+            <p>7079183597Authorised Signatory:</p>
+          </div>
+    
+          <p>Authorised Signatory</p>
+          <br>
+          <br>
+            <img class="bottomright" src="./qr_code.png" height="100px" width="100px" alt="qr code">
+          <hr>
+    </div>
+
+</body>
+</html>

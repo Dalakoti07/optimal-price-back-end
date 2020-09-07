@@ -38,10 +38,10 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     # print("name: {}, price:{} ".format(name.text,price.text))
     localProductdict= {
         "name":(companyName.text if (takeCompany and companyName) else '')+' ' + (name.text if name else "NA") ,
-        "price":price.text if price else "None",
-        "rating":rating.text if rating else "None",
-        "image_url":image_url if image_url else "None",
-        "product_page":product_page if product_page else "None"
+        "price":price.text if price else None,
+        "rating":rating.text if rating else None,
+        "image_url":image_url if image_url else None,
+        "product_page":product_page if product_page else None
     }
     return localProductdict
     
@@ -73,7 +73,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         with open('./scrapper/ecommerceClassesConfig.json') as f:
             classNameAttributes = json.load(f)
 
-    if ('mobiles' in keyword) or ('laptops' in keyword) or ('phones' in keyword):
+    if ('mobile' in keyword) or ('laptop' in keyword) or ('phone' in keyword):
         # webpages with box in each row
         typeOfCardInARow='a'
         classNameAttributes=classNameAttributes["flipkart"]['mobiles']
@@ -84,8 +84,8 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         colInRow=True
         print('keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["flipkart"]['books']
-        product_category='books' if ('books' in keyword) else 'electronics'
-    elif ('shirts' in keyword) or ('jacket' in keyword) or ('shoes' in keyword) or ('jeans' in keyword):
+        product_category='books' if ('book' in keyword) else 'electronics'
+    elif ('shirt' in keyword) or ('jacket' in keyword) or ('shoe' in keyword) or ('jean' in keyword):
         getCompany=True
         typeOfCardInARow='div'
         colInRow=True
@@ -115,7 +115,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
                     if not productDict:
                         continue
                     else:
-                        print("Name: {} and imageUrl: {}".format(productDict['name'],productDict['image_url']),end=' ')
+                        # print("Name: {} and imageUrl: {}".format(productDict['name'],productDict['image_url']),end=' ')
                         productsDict["product-{}".format(i)]=productDict
             else:
                 # single product in single row
@@ -139,10 +139,9 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
             print("exception at item-{},{},{},{},message:{}".format(i,exc_type, fname, exc_tb.tb_lineno,e))
 
     if callFromMain:
-        from ScrapperUtils import saveTheResultsToFile
         saveTheResultsToFile('csvs/flipkart-{}.csv'.format(keyword),productsDict)
 
-    print('length of data scrapped: '+str(len(listOfProducts)))
+    print('length of data scrapped from 1 page: '+str(len(listOfProducts)))
     return (listOfProducts,product_category)
     
     # print('one url '+listOfProducts[0].image_url+listOfProducts[4].image_url)
@@ -155,6 +154,8 @@ def scrapMultiplePages(driver,keyword,pageCount):
     return productsFromAllPages,product_category
 
 if __name__ == "__main__":
+    from ScrapperUtils import saveTheResultsToFile
+
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
     parser = argparse.ArgumentParser()

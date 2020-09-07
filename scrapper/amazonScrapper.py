@@ -14,7 +14,7 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     localProductdict=None
     companyName=None
     if takeCompany:
-        companyName=eachCardDiv.find('div',attrs={'class':classNameAttributes['company_name']})
+        companyName=eachCardDiv.find('span',attrs={'class':classNameAttributes['company_name']})
     name=eachCardDiv.find('span', attrs={'class':classNameAttributes['name']})
     price=eachCardDiv.find('span', attrs={'class':classNameAttributes['price']})
     rating=eachCardDiv.find('a', attrs={'class':classNameAttributes['rating']})
@@ -25,7 +25,7 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     else:
         product_page=None
     
-    product_page=('https://www.amazon.in'+product_page) if product_page else "None"
+    product_page=('https://www.amazon.in'+product_page) if product_page else None
     imageDiv=eachCardDiv.find('div',attrs={'class':classNameAttributes['image']})
     image_url='default.jpg'
     if imageDiv:
@@ -35,10 +35,10 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     # print("name: {}, price:{} ".format(name.text,price.text))
     localProductdict= {
         "name":(companyName.text if (takeCompany and companyName) else '')+' ' + (name.text if name else "NA") ,
-        "price":price.text if price else "None",
-        "rating":rating.text if rating else "None",
-        "image_url":image_url if image_url else "None",
-        "product_page":product_page if product_page else "None"
+        "price":price.text if price else None,
+        "rating":rating.text if rating else None,
+        "image_url":image_url if image_url else None,
+        "product_page":product_page if product_page else None
     }
     return localProductdict
 
@@ -68,22 +68,21 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     else:
         with open('./scrapper/ecommerceClassesConfig.json') as f:
             classNameAttributes = json.load(f)
-    if ('mobiles' in keyword) or ('laptops' in keyword) or ('books' in keyword) or ('phones' in keyword):
+    if ('mobiles' in keyword) or ('laptops' in keyword) or ('book' in keyword) or ('phone' in keyword):
         # webpages with box in each row
         typeOfCardInARow='div'
         classNameAttributes=classNameAttributes["amazon"]['mobiles']
-        product_category = 'mobiles' if (('mobiles' in keyword) or ('phones' in keyword)) else ('computer' if ('laptops' in keyword) else 'books')
+        product_category = 'mobiles' if (('mobiles' in keyword) or ('phone' in keyword)) else ('computer' if ('laptop' in keyword) else 'books')
     elif keyword in ['electronics']:
         # webpages with m boxes in each row
         typeOfCardInARow='div'
         colInRow=True
         print('keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["amazon"]['multiple']
-    elif ('shirts' in keyword) or ('jacket' in keyword) or ('shoes' in keyword) or ('jeans' in keyword):
+    elif ('shirt' in keyword) or ('jacket' in keyword) or ('shoe' in keyword) or ('jean' in keyword):
         getCompany=True
         typeOfCardInARow='div'
-        colInRow=True
-        print('keyword is {}'.format(keyword))
+        print('fashion keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["amazon"]['multiple']
         product_category='fashion'
     else:
@@ -124,7 +123,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         from ScrapperUtils import saveTheResultsToFile
         saveTheResultsToFile('csvs/amazon-{}.csv'.format(keyword),productsDict)
 
-    print('length of data scrapped: '+str(len(listOfProducts)))
+    print('length of data scrapped from 1 page: '+str(len(listOfProducts)))
     if callFromMain:
         driver.close()
     return (listOfProducts,product_category)
@@ -148,6 +147,7 @@ if __name__ == "__main__":
     service.start()
     driver=webdriver.Remote(service.service_url) 
     
-    getTheData(driver,args.item)
+    items,_ =scrapAPage(driver,args.item)
+    print(items)
 else:
     print("Executed when imported")

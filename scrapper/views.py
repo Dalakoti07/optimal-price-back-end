@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage
-from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV
+from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 
 # selenium and web scrapping stuff
@@ -76,21 +76,24 @@ def search_by_scrap(request):
         # scrap the data from flipkart 
         flipkartItems,category_type=flipkartScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from flipkart".format(len(flipkartItems)))
-        # serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
+        serialiseTheScrappedPagesIntoCSV(flipkartItems,"./scrapper/csvs/flipkart-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
         
         # launch a new tab,to run amazon and python query consequently
 
         # scrap the data from amazon
         amazonItems,category_type=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
-        print("{} items scrapped from amzon".format(len(amazonItems)))
-        # serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
+        print("{} items scrapped from amazon".format(len(amazonItems)))
+        serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
 
         # driver.close()
         elapsed_time = time.perf_counter() - start_time
         if category_type=='fashion':
-            saveToDB(amazonItems)
-            saveToDB(flipkartItems)
-            return JsonResponse(returnJsonResponseFromProductList(list(amazonItems)+list(flipkartItems),totalTime=elapsed_time),safe=False)
+            # merge is necessary so that it comes in right format, we pseudo merge in this case
+            pseudoMergeAmazon=pseudoMergeIt(amazonItems,'amazon',category_type)
+            pseudoMergeFlipkart=pseudoMergeIt(flipkartItems,'flipkart',category_type)
+            saveToDB(pseudoMergeAmazon)
+            saveToDB(pseudoMergeFlipkart)
+            return JsonResponse(returnJsonResponseFromProductList(pseudoMergeAmazon+pseudoMergeFlipkart,totalTime=elapsed_time),safe=False)
         print(f"searched {searchKey} and got executed in {elapsed_time:0.2f} seconds.")
         if amazonItems and flipkartItems:
             # serialisedData=ProductSerializer(responseFromFunc,many=True)

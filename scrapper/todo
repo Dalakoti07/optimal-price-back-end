@@ -21,7 +21,6 @@
     health and fitness
     electronics
 
-    sometime its taking too much time to fetch the data, set the timeout, see if u cam make call again on same api
 
 fashion (10 pages) - see observation
         // no comparison in fashion, just options side by side in ascending order
@@ -45,15 +44,18 @@ fashion (10 pages) - see observation
     its taking 24 seconds for iphone mobiles for 2 pages each on 
 
 8th september
+    sometime its taking too much time to fetch the data, set the timeout, see if u cam make call again on same api
     flipkart product name (in jackets ) has same name and thus we are getting name conflicts and thus most of data is getting lost
     make sub categories in fashion like shirts, jackets
 
 product categories - 
-    mobiles
-    electronics
-    books
-    fashion
-    health
-    computers
+    @done mobiles 
+    electronics - pendrive, headphones, speakers and 
+    @done books 
+    @done fashion
+    health - fitness band, bp machines, and exercise machine 
+    computers - no comparison , keyboard, mouse, monitors, companywise laptops
+    deals of the day from flipkart only- a tag with class _1bn9xk and it has href for image
+
 
 try this asynchronously

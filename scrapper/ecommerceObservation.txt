@@ -21,3 +21,8 @@ Database Product Object
 Product name
 Company name
 Ecommerce site
+
+
+update deals everyday
+update the db everyday, means fetch the new price from amazon and flipkart
+update the items in db after 4 days

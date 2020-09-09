@@ -155,7 +155,7 @@ def saveToDB(merged_list,save=True):
                 ecommerce_company_val='both'
                 if hasattr(m, 'ecommerce_company'):
                     ecommerce_company_val=m.ecommerce_company
-                product =Product(name=m.name,rating=m.name,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company=ecommerce_company_val,amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
+                product =Product(name=m.name,rating=m.rating,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company=ecommerce_company_val,amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
                 product.save()
                 i+=1
             except Exception as e:

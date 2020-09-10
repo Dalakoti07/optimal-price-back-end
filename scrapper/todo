@@ -43,10 +43,16 @@ fashion (10 pages) - see observation
         best seller 
     its taking 24 seconds for iphone mobiles for 2 pages each on 
 
-8th september
+10th september
+    TODO make a mobile-products detail api 
+    TODO make a model for products details and check if no details exist then scrap it
+    TODO make deals api from flipkart and make model for it
     sometime its taking too much time to fetch the data, set the timeout, see if u cam make call again on same api
     flipkart product name (in jackets ) has same name and thus we are getting name conflicts and thus most of data is getting lost
     make sub categories in fashion like shirts, jackets
+
+TODO change the data types of model Product attribute wherever necessary
+
 
 product categories - 
     @done mobiles 

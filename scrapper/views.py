@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer,DealsSerializer
 
 # Create your views here.
-from .models import Product
+from .models import Product,Deals
 from django.http import HttpResponse, JsonResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
 # utils function import
-from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage
+from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage, scrapDeals as flipkartDeals
 from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 
@@ -141,3 +141,28 @@ def searchByCategory(request):
     print('data search_key:{}'.format(data['search']))
     return HttpResponse('returning ')
 '''
+def fetchTheDeals(request):
+    if request.method=='GET':
+        allDeals=Deals.objects.all()
+        if len(allDeals)==0:
+            # scrap new deals
+            service = Service('./driver')
+            service.start()
+            driver=webdriver.Remote(service.service_url)
+            deals= flipkartDeals(driver=driver,callFromMain=False)
+            # TODO see if this does not close the product scrap service
+            driver.close()
+            if not deals:
+                return HttpResponse('something broke')
+            for key in deals:
+                try:
+                    deal = Deals(sales_link=deals[key]['href_link'],sales_image_link=deals[key]['image_url'])
+                    deal.save()
+                except Exception as e:
+                    print('error in saving deal object {}'.format(e))
+            # done
+        else:
+            serializer=DealsSerializer(allDeals,many=True,context={'request': request})
+            return JsonResponse(serializer.data, safe=False)
+    else:
+        return HttpResponseBadRequest('Method Not allowed ')

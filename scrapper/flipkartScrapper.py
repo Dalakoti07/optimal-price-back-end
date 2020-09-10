@@ -44,7 +44,17 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
         "product_page":product_page if product_page else None
     }
     return localProductdict
-    
+
+#FIXME is this right
+def readConfigFile(callFromMain):
+    JsonFile=None
+    if callFromMain:
+        with open('./ecommerceClassesConfig.json') as f:
+            JsonFile = json.load(f)
+    else:
+        with open('./scrapper/ecommerceClassesConfig.json') as f:
+            JsonFile = json.load(f)
+    return JsonFile
 
 #function used for scrapping in getthedata working for only mobiles
 def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
@@ -66,12 +76,7 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     typeOfCardInARow=None
     getCompany=False
     product_category=None
-    if callFromMain:
-        with open('./ecommerceClassesConfig.json') as f:
-            classNameAttributes = json.load(f)
-    else:
-        with open('./scrapper/ecommerceClassesConfig.json') as f:
-            classNameAttributes = json.load(f)
+    classNameAttributes=readConfigFile(callFromMain)
 
     if ('mobile' in keyword) or ('laptop' in keyword) or ('phone' in keyword):
         # webpages with box in each row
@@ -152,12 +157,37 @@ def scrapMultiplePages(driver,keyword,pageCount):
         received_items,product_category = scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
         productsFromAllPages= list(received_items) + productsFromAllPages 
     return productsFromAllPages,product_category
+def saveHTML(content):
+    pass
+
+def scrapDeals(driver,callFromMain=False):
+    base_url_deals='https://www.flipkart.com'
+    driver.get(base_url_deals)
+    html_soup = BeautifulSoup(driver.page_source, 'html.parser')
+    jsonFile=readConfigFile(callFromMain)
+    classNameAttributes=jsonFile['flipkart']['deals']
+    results={}
+    i=1
+    for eachCard in html_soup.find_all('a',href=True,attrs={'class':classNameAttributes['card']}):
+        href_link=base_url_deals+ eachCard['href']
+        imageDivs=eachCard.findAll('img',{"src":True})
+        image_url=None
+        if len(imageDivs)>=1 :
+            image_url=imageDivs[0]['src']
+        results["deal-{}".format(i)]={
+            "image_url":image_url,
+            "href_link":href_link
+        }
+        i=i+1
+    # print(results)
+    return results
 
 if __name__ == "__main__":
     from ScrapperUtils import saveTheResultsToFile
 
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("--item", help="enter the item name you want to search on flipkart",type=str)
     args = parser.parse_args()
@@ -166,8 +196,11 @@ if __name__ == "__main__":
     service = Service('./driver')
     service.start()
     driver=webdriver.Remote(service.service_url) 
-    
-    scrapAPage(driver,args.item)
+    if args.item=='deals':
+        scrapDeals(driver,callFromMain= True)
+    else:
+        scrapAPage(driver,args.item)
     driver.close()
 else:
     print("Executed when imported")
+

@@ -3,7 +3,7 @@ if __name__ == "__main__":
 else:
     # call from django,
     # but it can be call from flipkart or amazon scrapper
-    # commit it when not using django
+    # comment it when not using django
     from .ScrappedItem import ScrappedItem
     from .models import Product
     pass
@@ -25,6 +25,7 @@ def validateData():
     pass
 
 def createNewItem(fi,ai,categorytype='simple'):
+    # TODO make an attribute for amazon price and flipkart price
     # priority wise attributes
     # name - flip, rating -flip, imageurl flip else amazon
     # price -amazon, 

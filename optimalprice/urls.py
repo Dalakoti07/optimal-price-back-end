@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf.urls import include, url
 from django.conf import settings
 from django.conf.urls.static import static
-
+# TODO make good landing page for product app also like auth app
 urlpatterns = [
     url(r'admin/', admin.site.urls),
     url(r'^auth/',include('authApp.urls')),

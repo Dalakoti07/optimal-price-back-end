@@ -27,12 +27,16 @@ class Deals(models.Model):
     sales_image_link=models.CharField(max_length=500,null=False)
     
 # specially for mobiles
+# TODO make its feature as JSONObject type
 class ProductDetails(models.Model):
     # TODO get the images(flipkart) and reviews (flipkart)
-    product_link=models.CharField(max_length=500,null=False,default='')
-    # product=models.OneToOneField(Product,on_delete=models.CASCADE)
+    # product_link=models.CharField(max_length=500,null=False,default='')
+    
+    # one to one mapping from products to product-details
+    product=models.OneToOneField(Product,on_delete=models.CASCADE,null=False)
 
     # general
+    
     in_the_box=models.CharField(max_length=200,blank=True,default='')
     model_number=models.CharField(max_length=20,blank=True,default='')
     model_name=models.CharField(max_length=20,blank=True,default='')
@@ -103,15 +107,19 @@ class ProductDetails(models.Model):
 
     # warrenty
     warranty_summary=models.CharField(max_length=100,blank=True,default='')
+    
 
-    # list of image src
-    product_images = ListCharField(
-        base_field=CharField(max_length=500),
-        size=6,
-        max_length=(6 * 501)  # 6 * 10 character nominals, plus commas
-    )
+    # list of image src only available in postgres
+    # product_images = ListCharField(
+    #     base_field=CharField(max_length=500),
+    #     size=6,
+    #     max_length=(6 * 501)  # 6 * 10 character nominals, plus commas
+    # )
 
 class Review(models.Model):
+    # product as foreign key
+    product=models.ForeignKey(Product,on_delete=models.CASCADE,null=False)
+
     reviewer_name=models.CharField(max_length=20,blank=False,default='')
     reviewer_address=models.CharField(max_length=20,blank=False,default='')
     review_title=models.CharField(max_length=20,blank=False,default='')

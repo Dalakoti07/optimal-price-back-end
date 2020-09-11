@@ -4,8 +4,8 @@ else:
     # call from django,
     # but it can be call from flipkart or amazon scrapper
     # comment it when not using django
-    from .ScrappedItem import ScrappedItem
-    from .models import Product
+    # from .ScrappedItem import ScrappedItem
+    # from .models import Product
     pass
 
 import csv

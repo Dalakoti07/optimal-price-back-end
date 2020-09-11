@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^product_api/',include('scrapper.urls')),
 ]
 
+# TODO make post and update request in products database allowed only to admin 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

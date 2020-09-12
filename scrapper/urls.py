@@ -1,15 +1,29 @@
 from django.conf.urls import url, include
 from rest_framework import routers
-# from .views import ProductViewSet
 from scrapper import views
+from .views import ReviewViewSet,ProductsViewSet,ProductDetailViewSet
+
+reviews_list=ReviewViewSet.as_view({
+    'get':'list'
+})
+product_list=ProductsViewSet.as_view({
+    'get':'list',
+})
+product_detail_list=ProductDetailViewSet.as_view({
+    'get':'list',
+})
 
 # router = routers.DefaultRouter()
 # router.register(r'products', )
+# TODO make productdetails feilds as read only when viewed through django
 #TODO combine all the search query in one url, and allows various paramters like search by category and the  search by company and search by name substring
 urlpatterns = [
     url(r'^search_in_db',views.search_in_db),
     url(r'^scrap', views.search_by_scrap),
     url(r'^search',views.searchByCategory),
     url(r'^deals',views.fetchTheDeals),
-    url(r'^',views.viewAllProducts),
+    url(r'^product_details', product_detail_list, name='review-detail'),
+    url(r'^get_product_detail',views.getTheProductDetails),
+    url(r'^products', product_list, name='product-list'),
+    url(r'^reviews', reviews_list, name='review-detail'),
 ]

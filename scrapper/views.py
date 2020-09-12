@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import ProductSerializer,DealsSerializer
+from .serializers import ProductSerializer,DealsSerializer,ReviewSerializer,ProductDetailSerializer
 
 # Create your views here.
-from .models import Product,Deals
+from .models import Product,Deals,ProductDetail,Review
 from django.http import HttpResponse, JsonResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage, scrapDeals as flipkartDeals
-from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt
+from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt,saveProductDetailsToDB
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
+from .ProductDetailsScrapper import scrapTheDetails
+from rest_framework.decorators import authentication_classes, permission_classes
+
 
 # selenium and web scrapping stuff
 import argparse
@@ -21,18 +24,15 @@ from requests import get
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import json
+from rest_framework.decorators import api_view
 # use selenium service to avoid too much rersource usage
 import sys 
+from rest_framework.reverse import reverse
+from rest_framework.response import Response
 
+# TODO try to use viewset in all views it gives pagination and good pages
 
-'''
-class ProductViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-'''
+# helper function
 def returnJsonResponseFromProductList(productList,totalTime):
     data=[]
     for p in productList:
@@ -109,22 +109,11 @@ def search_by_scrap(request):
         # return JsonResponse('it should be done',safe=False)
 
 def search_in_db(request):
-    if request.method=='GET':
-        searchWord=str(request.GET['search'])
-        print('search key: '+str(request.GET['search']))
-        filtered_products=Product.objects.filter(name__contains=searchWord)
-        serialized_data=ProductSerializer(filtered_products,many=True)
-        return JsonResponse(serialized_data.data,safe=False)
-    else:
-        return HttpResponseBadRequest('Method Not allowed')
-
-def viewAllProducts(request):
-    if request.method=='GET':
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    else:
-        HttpResponseBadRequest('Method Not allowed ')
+    searchWord=str(request.GET['search'])
+    print('search key: '+str(request.GET['search']))
+    filtered_products=Product.objects.filter(name__contains=searchWord)
+    serialized_data=ProductSerializer(filtered_products,many=True)
+    return JsonResponse(serialized_data.data,safe=False)
 
 def searchByCategory(request):
     if request.method=='GET':
@@ -166,3 +155,42 @@ def fetchTheDeals(request):
             return JsonResponse(serializer.data, safe=False)
     else:
         return HttpResponseBadRequest('Method Not allowed ')
+
+def getTheProductDetails(request):
+    if request.method=='GET':
+        productId=str(request.GET['product_id'])
+        # find product url from product id
+        try:
+            productObject=Product.objects.get(id=productId)
+            
+            service = Service('./driver')
+            service.start()
+            driver=webdriver.Remote(service.service_url)
+            print('getting the product {}'.format(productObject.name))
+            json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=None,url=productObject.flipkart_link,callFromMain=False)
+            # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
+            saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
+            return JsonResponse('done', safe=False)
+        except Exception as e:
+            return HttpResponseBadRequest('Invalid productId')
+            
+    else:
+        return HttpResponseBadRequest('Method Not allowed ')
+
+@authentication_classes([])
+@permission_classes([])
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset=Review.objects.all()
+    serializer_class=ReviewSerializer
+
+@authentication_classes([])
+@permission_classes([])
+class ProductsViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+@authentication_classes([])
+@permission_classes([])
+class ProductDetailViewSet(viewsets.ModelViewSet):
+    queryset = ProductDetail.objects.all()
+    serializer_class = ProductDetailSerializer

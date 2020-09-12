@@ -84,18 +84,21 @@ def getTheImages(classNameAttributes,html):
     return imagesDict
 
 #function used for scrapping in getthedata working for only mobiles
-def scrapTheDetails(driver,url,callFromMain=True,page_number=0):    
-    print("fetching the url..........{}".format(url))
+def scrapTheDetails(driver,url,callFromMain=False):    
+    if not url:
+        return None,None,None
+    print("fetching the details from url..........{}".format(url))
     if driver:
         try :
             driver.get(url)
         except Exception as e:
             print("got an dirver exception return")
-            return listOfProducts    
+            return None,None,None
         time.sleep(1)
         html_soup = BeautifulSoup(driver.page_source, 'html.parser')
     else:
-        htmlPage= readHTML("./htmls/realmedetails.html")
+        # when running from main
+        htmlPage= readHTML("./scrapper/htmls/realmedetails.html")
         html_soup = BeautifulSoup(htmlPage, 'html.parser')
     
     # saveTheHTML(driver.page_source,"./htmls/realmedetails.html")
@@ -113,8 +116,8 @@ def scrapTheDetails(driver,url,callFromMain=True,page_number=0):
     json_images=json.dumps(imagesDict,indent=4)
     json_reviews=json.dumps(reviewsDict,indent=4)
 
-    print('reviews are {} '.format(json_images))
-    return (json_spec_all,imagesDict,reviewsDict)
+    # print('reviews are {} '.format(json_reviews))
+    return (json_spec_all,json_images,reviewsDict)
     
     # print('one url '+listOfProducts[0].image_url+listOfProducts[4].image_url)
 
@@ -135,7 +138,7 @@ if __name__ == "__main__":
     service.start()
     driver=webdriver.Remote(service.service_url) 
     '''
-    scrapTheDetails(driver,args.url)
+    scrapTheDetails(driver,args.url,callFromMain=True)
     # driver.close()
 else:
     print("Executed when imported")

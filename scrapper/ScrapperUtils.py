@@ -4,11 +4,12 @@ else:
     # call from django,
     # but it can be call from flipkart or amazon scrapper
     # comment it when not using django
-    # from .ScrappedItem import ScrappedItem
-    # from .models import Product
+    from .ScrappedItem import ScrappedItem
+    from .models import Product,ProductDetail,Review
     pass
 
 import csv
+import json
 from difflib import SequenceMatcher
 def cleanTheName(currentString):
     currentString=currentString.replace('(','')
@@ -166,6 +167,31 @@ def saveToDB(merged_list,save=True):
             # smiluation
             i+=1
     print(f'items saved in db {i}')
+
+def saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict):
+    # save product details
+    print('saving details to db')
+    try:
+        product_spec=ProductDetail(product= productObject,product_full_spec= json_spec_all,product_images=json_images)
+        product_spec.save()
+    except Exception as e:
+        print('got error when saving details object {}'.format(e))
+
+    print('saved producst spec to db')
+    # save review
+    for review in reviewsDict:
+        try:
+            review_object=Review(product=productObject,
+                    reviewer_name= reviewsDict[review]['given_by'],
+                    review_given_when=reviewsDict[review]['when_given'],
+                    review_title=reviewsDict[review]['title'],
+                    ratings= int (reviewsDict[review]['rating']),
+                    content=reviewsDict[review]['content']
+                )
+            review_object.save()
+        except Exception as e:
+            print('got error when saving review object {}'.format(e))
+    print('saved reviews to db')
 
 '''
 mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-2_pages-realme phones.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-2_pages-realme phones.csv"),categoryType='phones')

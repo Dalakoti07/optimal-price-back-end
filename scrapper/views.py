@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import ProductSerializer,DealsSerializer,ReviewSerializer,ProductDetailSerializer
+from .serializers import ProductSerializer,DealsSerializer,ReviewSerializer,ProductDetailsSerilizer,ProductFullSpecsSerializer
 
 # Create your views here.
 from .models import Product,Deals,ProductDetail,Review
@@ -162,15 +162,26 @@ def getTheProductDetails(request):
         # find product url from product id
         try:
             productObject=Product.objects.get(id=productId)
-            
-            service = Service('./driver')
-            service.start()
-            driver=webdriver.Remote(service.service_url)
-            print('getting the product {}'.format(productObject.name))
-            json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=None,url=productObject.flipkart_link,callFromMain=False)
-            # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
-            saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
-            return JsonResponse('done', safe=False)
+            # see if we have a productDetail object for this
+            productDetailsObjects=ProductDetail.objects.all().filter(product=productObject.id)
+            if len(productDetailsObjects)==1:
+                print('returning the cache data')
+                serialized_data=SpecsDetailsSerilizer(productObject,many=False)
+                return JsonResponse(serialized_data.data,safe=False)
+            else:
+                print('scraping the data')
+                service = Service('./driver')
+                service.start()
+                driver=webdriver.Remote(service.service_url)
+                print('getting the product {}'.format(productObject.name))
+                json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=driver,url=productObject.flipkart_link,callFromMain=False)
+                # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
+                saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
+                # get the saved data and return it
+                new_product_detail_objects=ProductDetail.objects.all().filter(product=productObject.id)
+                serialized_data=SpecsDetailsSerilizer(new_product_detail_objects[0],many=False)
+                return JsonResponse(serialized_data.data,safe=False)
+        
         except Exception as e:
             return HttpResponseBadRequest('Invalid productId')
             
@@ -180,17 +191,45 @@ def getTheProductDetails(request):
 @authentication_classes([])
 @permission_classes([])
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset=Review.objects.all()
-    serializer_class=ReviewSerializer
+    serializer_class = ReviewSerializer
+    def list(self,request,productId=None):
+        if productId:
+            print('searching reviews for product id '+productId)
+            all_reviews=Review.objects.all().filter(product=productId)
+            serializer = self.get_serializer(all_reviews, many=True)
+            return Response(serializer.data)
+        else:
+            print('getting all reviews')
+            all_reviews=Review.objects.all()
+            serializer = self.get_serializer(all_reviews, many=True)
+            return Response(serializer.data)
 
+# TODO make this viewset same as reviewviewset and combine all search queries here
 @authentication_classes([])
 @permission_classes([])
 class ProductsViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+# TODO make this viewset same as reviewviewset
 @authentication_classes([])
 @permission_classes([])
 class ProductDetailViewSet(viewsets.ModelViewSet):
-    queryset = ProductDetail.objects.all()
-    serializer_class = ProductDetailSerializer
+    queryset = Product.objects.all()
+    serializer_class = ProductDetailsSerilizer
+
+@authentication_classes([])
+@permission_classes([])
+class ProductFullSpecViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductFullSpecsSerializer
+    def list(self,request,productId=None):
+        if productId:
+            print('searching full-spec for product id '+productId)
+            all_specs_objects=ProductDetail.objects.all().filter(product=productId)
+            serializer = self.get_serializer(all_specs_objects[0], many=False)
+            return Response(serializer.data)
+        else:
+            print('getting all reviews')
+            all_specs_objects=ProductDetail.objects.all()
+            serializer = self.get_serializer(all_specs_objects, many=True)
+            return Response(serializer.data)

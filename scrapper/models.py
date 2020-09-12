@@ -29,10 +29,9 @@ class Deals(models.Model):
     sales_image_link=models.CharField(max_length=500,null=False)
     
 '''
+# TODO delete this
 # specially for mobiles
-# TODO make its feature as JSONObject type
 class ProductDetails(models.Model):
-    # TODO get the images(flipkart) and reviews (flipkart)
     # product_link=models.CharField(max_length=500,null=False,default='')
     
     # one to one mapping from products to product-details
@@ -99,7 +98,6 @@ class ProductDetails(models.Model):
     edge=models.BooleanField(blank=True,default=False)
     audio_jack=models.CharField(max_length=10,blank=True,default='')
 
-    #TODO complete if interest prevails
     # skipping other details, multi media feature, battery and power feature
 
     # dimensions
@@ -120,6 +118,9 @@ class ProductDetails(models.Model):
     # )
 '''
 class ProductDetail(models.Model):
+    class Meta:
+        ordering=['-id']
+    
     product=models.OneToOneField(Product,on_delete=models.CASCADE,null=False,default=None,related_name='details')
     product_full_spec=models.JSONField()
     product_images=models.JSONField()
@@ -128,6 +129,9 @@ class ProductDetail(models.Model):
         return "{} details".format(self.product.name)
 
 class Review(models.Model):
+    class Meta:
+        ordering=['-id']
+    
     # product as foreign key
     product=models.ForeignKey(Product,on_delete=models.CASCADE,null=False,default=None)
 

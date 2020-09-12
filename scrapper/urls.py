@@ -24,9 +24,8 @@ product_detail_list=ProductDetailViewSet.as_view({
 # TODO make productdetails feilds as read only when viewed through django
 #TODO combine all the search query in one url, and allows various paramters like search by category and the  search by company and search by name substring
 urlpatterns = [
-    url(r'^search_in_db',views.search_in_db),
+    url(r'^search',product_list, name='search-list'),
     url(r'^scrap', views.search_by_scrap),
-    url(r'^search',views.searchByCategory),
     url(r'^deals',views.fetchTheDeals),
     url(r'^product_details', product_detail_list, name='product-detail'),
     url(r'^get_product_detail',views.getTheProductDetails),

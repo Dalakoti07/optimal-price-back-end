@@ -33,6 +33,7 @@ from rest_framework.response import Response
 # TODO try to use viewset in all views it gives pagination and good pages
 
 # helper function
+# TODO remove below func in utils file
 def returnJsonResponseFromProductList(productList,totalTime):
     data=[]
     for p in productList:
@@ -108,28 +109,6 @@ def search_by_scrap(request):
         # saveToDB(mergeList(deserialiseTheListFromCSV("./scrapper/csvs/flipkart-django-5_pages-samsung phones.csv"),deserialiseTheListFromCSV("./scrapper/csvs/amazon-django-5_pages-samsung phones.csv"),categoryType='mobiles'))
         # return JsonResponse('it should be done',safe=False)
 
-def search_in_db(request):
-    searchWord=str(request.GET['search'])
-    print('search key: '+str(request.GET['search']))
-    filtered_products=Product.objects.filter(name__contains=searchWord)
-    serialized_data=ProductSerializer(filtered_products,many=True)
-    return JsonResponse(serialized_data.data,safe=False)
-
-def searchByCategory(request):
-    if request.method=='GET':
-        category_name=str(request.GET['category'])
-        print('category key: '+category_name)
-        filtered_products=Product.objects.filter(product_category=category_name)
-        serialized_data=ProductSerializer(filtered_products,many=True)
-        return JsonResponse(serialized_data.data,safe=False)
-    else:
-        return HttpResponseBadRequest('Method Not allowed')
-
-'''
-    data = JSONParser().parse(request)
-    print('data search_key:{}'.format(data['search']))
-    return HttpResponse('returning ')
-'''
 def fetchTheDeals(request):
     if request.method=='GET':
         allDeals=Deals.objects.all()
@@ -204,14 +183,39 @@ class ReviewViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(all_reviews, many=True)
             return Response(serializer.data)
 
-# TODO make this viewset same as reviewviewset and combine all search queries here
 @authentication_classes([])
 @permission_classes([])
 class ProductsViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+    def get_queryset(self):
+        company = self.request.query_params.get('company')
+        category= self.request.query_params.get('category')
+        product_name = self.request.query_params.get('name')
+        queryset=None
 
-# TODO make this viewset same as reviewviewset
+        print('got the queries in viewset company:{} ,category:{} ,product_name{}'.format(company,category,product_name))
+        if company and category and product_name:
+            queryset=Product.objects.all().filter(brand_name__contains=company,product_category__contains=category,name__contains=product_name)
+        elif company and category:
+            queryset=Product.objects.all().filter(brand_name__contains=company,product_category__contains=category)
+        elif category and product_name:
+            queryset=Product.objects.all().filter(product_category__contains=category,name__contains=product_name)
+        elif product_name and company:
+            queryset=Product.objects.all().filter(brand_name__contains=company,name__contains=product_name)
+        elif company:
+            queryset=Product.objects.all().filter(brand_name__contains=company)
+        elif category:
+            queryset=Product.objects.all().filter(product_category__contains=category)
+        elif product_name:
+            queryset=Product.objects.all().filter(name__contains=product_name)
+        else:
+            queryset=Product.objects.all()
+
+        return queryset
+    # serializer = self.get_serializer(queryset, many=False)
+    # return Response(serializer.data)
+
 @authentication_classes([])
 @permission_classes([])
 class ProductDetailViewSet(viewsets.ModelViewSet):

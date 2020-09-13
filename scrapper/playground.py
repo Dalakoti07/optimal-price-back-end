@@ -93,7 +93,7 @@ for i, o in enumerate(list1):
 print(list1)
 '''
 
-
+'''
 async def saveToDB():
     print('saving to db')
     await asyncio.sleep(2)
@@ -108,7 +108,7 @@ loop = asyncio.get_event_loop()
 asyncio.ensure_future(getTheResponse())
 # asyncio.ensure_future(saveToDB())
 loop.run_forever()
-
+'''
 '''
 async def async_foo():
     print("async_foo started")
@@ -125,3 +125,15 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
 '''
 
+uniqueName={}
+newList=[]
+list1=['saurabh','saurabh','nitin','amit','aakash','ajay','nitin','saurabh','nikhil','nitin']
+for l in list1:
+    if l in uniqueName.keys():
+        uniqueName[l]+=1
+        newList.append(l+" ({})".format(uniqueName[l]))
+    else:
+        uniqueName[l]=1
+        newList.append(l)
+
+print(newList)

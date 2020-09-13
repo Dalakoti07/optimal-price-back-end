@@ -6,7 +6,7 @@ import json
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Product
-        fields = ['id','name', 'rating', 'image_url', 'price','amazon_link','flipkart_link','created_at','brand_name','ecommerce_company']
+        fields = ['id','name', 'rating', 'image_url', 'flipkart_price','amazon_price','amazon_link','flipkart_link','created_at','brand_name','ecommerce_company']
 
 class DealsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,7 +47,7 @@ class ProductFullSpecsSerializer(serializers.ModelSerializer):
 class ProductDetailsSerilizer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id','name', 'rating', 'image_url', 'price','amazon_link',
+        fields = ['id','name', 'rating', 'image_url', 'amazon_price','flipkart_price','amazon_link',
                     'flipkart_link','created_at','brand_name','ecommerce_company',
                     'image_urls','general_features']
 

@@ -45,7 +45,6 @@ def extractTheDataFromEachProductCard(eachCardDiv,classNameAttributes,nested=Fal
     }
     return localProductdict
 
-#FIXME is this right
 def readConfigFile(callFromMain):
     JsonFile=None
     if callFromMain:
@@ -78,12 +77,12 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
     product_category=None
     classNameAttributes=readConfigFile(callFromMain)
 
-    if ('mobile' in keyword) or ('laptop' in keyword) or ('phone' in keyword):
+    if ('mobile' in keyword) or ('laptop' in keyword) or ('phone' in keyword) or ('refrigerator' in keyword) or ('television' in keyword) or ('camera' in keyword) :
         # webpages with box in each row
         typeOfCardInARow='a'
         classNameAttributes=classNameAttributes["flipkart"]['mobiles']
         product_category = 'mobiles' if (('mobiles' in keyword) or ('phones' in keyword)) else 'computer'
-    elif ('books' in keyword) or ('electronics' in keyword):
+    elif ('books' in keyword):
         # webpages with m boxes in each row
         typeOfCardInARow='div'
         colInRow=True
@@ -99,9 +98,10 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         product_category='fashion'
     else:
         print('not handled that')
-        # driver.close()
         return listOfProducts
     i=0
+    if not callFromMain:
+        from .ScrappedItem import ScrappedItem
     # assuming that one product in 1 row => 1 'a' in each row, otherwise m product in each row means div as one row and m 'a' in it
     for eachRow in html_soup.findAll(typeOfCardInARow,href=False if colInRow else True, attrs={'class':classNameAttributes['card']}):
         if not colInRow:
@@ -122,13 +122,15 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
                     else:
                         # print("Name: {} and imageUrl: {}".format(productDict['name'],productDict['image_url']),end=' ')
                         productsDict["product-{}".format(i)]=productDict
+                        product=ScrappedItem(name=productDict['name'],rating=productDict['rating'],
+                            image_url=productDict['image_url'],price=productDict['price'],href=productDict['product_page'])
+                        listOfProducts.append(product)
             else:
                 # single product in single row
                 # print("single product in single row")
                 productDict=extractTheDataFromEachProductCard(eachCardDiv=eachRow,classNameAttributes=classNameAttributes)
             if not callFromMain:
                 print("django running saving {}-product.....".format(i))
-                from .ScrappedItem import ScrappedItem
                 if productDict:
                     product=ScrappedItem(name=productDict['name'],rating=productDict['rating'],
                             image_url=productDict['image_url'],price=productDict['price'],href=productDict['product_page'])
@@ -200,7 +202,7 @@ if __name__ == "__main__":
         scrapDeals(driver,callFromMain= True)
     else:
         scrapAPage(driver,args.item)
-    driver.close()
+    # driver.close()
 else:
     print("Executed when imported")
 

@@ -30,10 +30,8 @@ import sys
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
-# TODO try to use viewset in all views it gives pagination and good pages
-
 # helper function
-# TODO remove below func in utils file
+# TODO remove below func in utils file, it wont be needed if below task is done
 def returnJsonResponseFromProductList(productList,totalTime):
     data=[]
     for p in productList:
@@ -54,6 +52,7 @@ def returnJsonResponseFromProductList(productList,totalTime):
     }
     return response
 
+# TODO make the readable time stamp and then put that timestamp in each product and then query that back
 def search_by_scrap(request):
     if request.method=='GET':
         
@@ -82,11 +81,11 @@ def search_by_scrap(request):
         # launch a new tab,to run amazon and python query consequently
 
         # scrap the data from amazon
+        # the category returned by amazon is last category so 
         amazonItems,category_type=amazonScrapMultiplePage(driver,searchKey,pagesLimit)
         print("{} items scrapped from amazon".format(len(amazonItems)))
         serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
 
-        # driver.close()
         elapsed_time = time.perf_counter() - start_time
         if category_type=='fashion':
             # merge is necessary so that it comes in right format, we pseudo merge in this case
@@ -99,6 +98,8 @@ def search_by_scrap(request):
         if amazonItems and flipkartItems:
             # serialisedData=ProductSerializer(responseFromFunc,many=True)
             merged_list=mergeList(amazonList=amazonItems,flipkartList=flipkartItems,categoryType=category_type)
+            # TODO pass the timestamp and then query that time stamp
+            print('merged list size{} '.format(len(merged_list)))
             saveToDB(merged_list)
             return JsonResponse( returnJsonResponseFromProductList( merged_list,totalTime=elapsed_time),safe=False)
         else:
@@ -109,6 +110,7 @@ def search_by_scrap(request):
         # saveToDB(mergeList(deserialiseTheListFromCSV("./scrapper/csvs/flipkart-django-5_pages-samsung phones.csv"),deserialiseTheListFromCSV("./scrapper/csvs/amazon-django-5_pages-samsung phones.csv"),categoryType='mobiles'))
         # return JsonResponse('it should be done',safe=False)
 
+# TODO convert to viewset
 def fetchTheDeals(request):
     if request.method=='GET':
         allDeals=Deals.objects.all()
@@ -132,38 +134,6 @@ def fetchTheDeals(request):
         else:
             serializer=DealsSerializer(allDeals,many=True,context={'request': request})
             return JsonResponse(serializer.data, safe=False)
-    else:
-        return HttpResponseBadRequest('Method Not allowed ')
-
-def getTheProductDetails(request):
-    if request.method=='GET':
-        productId=str(request.GET['product_id'])
-        # find product url from product id
-        try:
-            productObject=Product.objects.get(id=productId)
-            # see if we have a productDetail object for this
-            productDetailsObjects=ProductDetail.objects.all().filter(product=productObject.id)
-            if len(productDetailsObjects)==1:
-                print('returning the cache data')
-                serialized_data=SpecsDetailsSerilizer(productObject,many=False)
-                return JsonResponse(serialized_data.data,safe=False)
-            else:
-                print('scraping the data')
-                service = Service('./driver')
-                service.start()
-                driver=webdriver.Remote(service.service_url)
-                print('getting the product {}'.format(productObject.name))
-                json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=driver,url=productObject.flipkart_link,callFromMain=False)
-                # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
-                saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
-                # get the saved data and return it
-                new_product_detail_objects=ProductDetail.objects.all().filter(product=productObject.id)
-                serialized_data=SpecsDetailsSerilizer(new_product_detail_objects[0],many=False)
-                return JsonResponse(serialized_data.data,safe=False)
-        
-        except Exception as e:
-            return HttpResponseBadRequest('Invalid productId')
-            
     else:
         return HttpResponseBadRequest('Method Not allowed ')
 
@@ -213,14 +183,42 @@ class ProductsViewSet(viewsets.ModelViewSet):
             queryset=Product.objects.all()
 
         return queryset
-    # serializer = self.get_serializer(queryset, many=False)
-    # return Response(serializer.data)
 
+from rest_framework.pagination import PageNumberPagination
 @authentication_classes([])
 @permission_classes([])
 class ProductDetailViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
+    # queryset = Product.objects.all()
     serializer_class = ProductDetailsSerilizer
+    def list(self,request,productId=None):
+        if productId:
+            print('getting some details about product id {}'.format(productId))
+            try:
+                productObject=Product.objects.get(id=productId)
+                # see if we have a productDetail object for this
+                productDetailsObjects=ProductDetail.objects.all().filter(product=productObject.id)
+                if len(productDetailsObjects)==1:
+                    print('returning the cache data')
+                    serialized_data=ProductDetailsSerilizer(productObject,many=False)
+                    return JsonResponse(serialized_data.data,safe=False)
+                else:
+                    print('scraping the data')
+                    service = Service('./driver')
+                    service.start()
+                    driver=webdriver.Remote(service.service_url)
+                    print('getting the product {}'.format(productObject.name))
+                    json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=driver,url=productObject.flipkart_link,callFromMain=False)
+                    # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
+                    saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
+                    # get the saved data and return it
+                    new_product_detail_object=Product.objects.get(id=productId)
+                    serialized_data=ProductDetailsSerilizer(new_product_detail_object,many=False)
+                    return JsonResponse(serialized_data.data,safe=False)
+            except Exception as e:
+                return Response('Invalid productId',status= 404)
+        else:
+            # FIXME pagination problem https://stackoverflow.com/questions/50878730/django-rest-framework-viewset-loses-pagination-searchfilter-and-orderingfilter
+            return JsonResponse(ProductDetailsSerilizer(Product.objects.all(),many=True).data,safe=False)
 
 @authentication_classes([])
 @permission_classes([])

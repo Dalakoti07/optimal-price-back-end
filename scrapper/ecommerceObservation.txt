@@ -7,6 +7,7 @@ work in that case.
 Solution 1: (No merge comparison and just render them and let user see the difference)
 
 So android screen would be like this
+# TODO if u dont get response within 1 min then kill the driver and start again or see if we can maintain a driver for each scrap
 Fashion click --> categories (Shoes, jackets,jeans, shirts) and then each category clicked would go to next activity and
 then two comparative recyclerview (sorted increasing order of size), on one side amazon and then another side flipkart
 click on each item would open the webview in android app itself, add a button on the card itself to save it in cart 

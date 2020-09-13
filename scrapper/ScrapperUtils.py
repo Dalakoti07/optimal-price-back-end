@@ -26,28 +26,29 @@ def validateData():
     pass
 
 def createNewItem(fi,ai,categorytype='simple'):
-    # TODO make an attribute for amazon price and flipkart price
     # priority wise attributes
     # name - flip, rating -flip, imageurl flip else amazon
     # price -amazon, 
     name=fi.name if fi.name else ai.name
     name=name.strip()
-    rating=fi.rating if fi.rating else ai.rating.split('out')[0]
+    rating=fi.rating if fi.rating else (ai.rating.split('out')[0] if ai.rating else None)
     image_url=fi.image_url if not '.svg' in fi.image_url else ai.image_url
-    price=None
+    amazon_price,flipkart_price=None,None
     try:
         if fi.price:
-            price=int(fi.price.replace('₹','').replace(',',''))
-        elif ai.price:
-            price=int(ai.price.replace(',','').replace('₹',''))
+            flipkart_price=int(fi.price.replace('₹','').replace(',',''))
+        if ai.price:
+            amazon_price=int(ai.price.replace(',','').replace('₹',''))
     except Exception as e:
         print("Error in processing price ")
         print(e)
 
     item= ScrappedItem(name=name,rating=rating,image_url= image_url
-        ,price= price,href=None)
+        ,price= None,href=None)
     # adding extra attributes [item's brand_name, amazon_link,flipkart_link,product_category]
     item.brand_name=item.name.split(' ')[0]
+    item.amazon_price=amazon_price
+    item.flipkart_price=flipkart_price
     item.amazon_link=ai.href
     item.flipkart_link=fi.href
     item.product_category=categorytype
@@ -55,19 +56,37 @@ def createNewItem(fi,ai,categorytype='simple'):
     return item
 
 def pseudoMergeIt(itemList,ecommerce_site,categoryType):
+    # in pseudo merge give indices (number) to each repeated, to avoid
+    uniqueName={} 
     print('pseudo merging it ')
     finalizeItems=[]
     for item in itemList:
-        newItem= ScrappedItem(name=item.name,rating=item.rating,image_url=item.image_url,price=item.price,href=None)
-        newItem.brand_name=newItem.name.split(' ')[0]
-        if ecommerce_site=='amazon':
-            newItem.amazon_link=item.href
-            newItem.flipkart_link=None
-            newItem.ecommerce_company='amazon'
+        # correcting the name
+        newCorrectName=None
+        if item.name in uniqueName.keys():
+            uniqueName[item.name]+=1
+            newCorrectName= item.name+" ({})".format(uniqueName[item.name])
         else:
-            newItem.flipkart_link=item.href
-            newItem.amazon_link=None
-            newItem.ecommerce_company='flipkart'
+            uniqueName[item.name]=1
+            newCorrectName= item.name
+
+        newItem= ScrappedItem(name=newCorrectName,rating=item.rating,image_url=item.image_url,price=item.price,href=None)
+        newItem.brand_name=newItem.name.split(' ')[0]
+        try:
+            if ecommerce_site=='amazon':
+                newItem.amazon_price=int(item.price.replace('₹','').replace(',',''))
+                newItem.flipkart_price=None
+                newItem.amazon_link=item.href
+                newItem.flipkart_link=None
+                newItem.ecommerce_company='amazon'
+            else:
+                newItem.amazon_price=None
+                newItem.flipkart_price=int(item.price.replace('₹','').replace(',',''))
+                newItem.flipkart_link=item.href
+                newItem.amazon_link=None
+                newItem.ecommerce_company='flipkart'
+        except Exception as e:
+            continue
         newItem.product_category=categoryType
         finalizeItems.append(newItem)
     return finalizeItems
@@ -82,6 +101,7 @@ def mergeList(amazonList,flipkartList,categoryType):
         idx=0
         for ai in amazonList:
             currentName=cleanTheName(ai.name.strip())
+            currentName=currentName[:50]
             if SequenceMatcher(None, nameToBeSearched, currentName).ratio() >=0.7:
                 # create mergedObject
                 new_item=createNewItem(fi,ai,categorytype=categoryType)
@@ -150,14 +170,18 @@ def deserialiseTheListFromCSV(fileName):
 def saveToDB(merged_list,save=True):
     i=0
     for m in merged_list:
-        if m.name==None or m.price==None:
+        if m.name==None:
             continue
         if save:
             try:
                 ecommerce_company_val='both'
                 if hasattr(m, 'ecommerce_company'):
                     ecommerce_company_val=m.ecommerce_company
-                product =Product(name=m.name,rating=m.rating,image_url=m.image_url,price=m.price,brand_name=m.brand_name,product_category=m.product_category,ecommerce_company=ecommerce_company_val,amazon_link=m.amazon_link,flipkart_link=m.flipkart_link )
+                product =Product(name=m.name,rating=m.rating,image_url=m.image_url,
+                                amazon_price=m.amazon_price,flipkart_price=m.flipkart_price,
+                                brand_name=m.brand_name,product_category=m.product_category,
+                                ecommerce_company=ecommerce_company_val,amazon_link=m.amazon_link,
+                                flipkart_link=m.flipkart_link )
                 product.save()
                 i+=1
             except Exception as e:
@@ -194,9 +218,13 @@ def saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict):
     print('saved reviews to db')
 
 '''
-mList= mergeList(deserialiseTheListFromCSV("./csvs/flipkart-django-2_pages-realme phones.csv"),deserialiseTheListFromCSV("./csvs/amazon-django-2_pages-realme phones.csv"),categoryType='phones')
-print("len of intersection item: {}".format(len(mList)))
-saveToDB(mList)
+flipList=deserialiseTheListFromCSV("./csvs/amazon-django-3_pages-samsung refrigerator.csv")
+amazonList=deserialiseTheListFromCSV("./csvs/flipkart-django-3_pages-samsung refrigerator.csv")
 
-saveTheMergeListIntoCSV(mList,"./csvs/merged-product-amaon-flipkart.csv")
+print("size of amz list:{} and size of flipkart list:{}".format(len(amazonList),len(flipList)))
+mList= mergeList(flipList,amazonList,categoryType='electronics')
+print("len of intersection item: {}".format(len(mList)))
+# saveToDB(mList)
+
+saveTheMergeListIntoCSV(mList,"./csvs/merged-reg-amazon-flipkart.csv")
 '''

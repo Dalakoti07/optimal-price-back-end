@@ -8,6 +8,7 @@ class Product(models.Model):
         ordering=['-id']
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name=models.CharField(max_length=50, null=False, default='',unique=True)
+    # TODO make rating of type star
     rating=models.CharField(max_length=10, null=True, default='')
     image_url=models.CharField(max_length=500, null=True, default='')
     # price=models.DecimalField(blank=False,max_digits=19, decimal_places=10)

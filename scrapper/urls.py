@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 from scrapper import views
-from .views import ReviewViewSet,ProductsViewSet,ProductDetailViewSet,ProductFullSpecViewSet
+from .views import ReviewViewSet,ProductsViewSet,ProductDetailViewSet,ProductFullSpecViewSet,LatestMobilesViewSet
 
 router = routers.SimpleRouter() 
 
@@ -18,7 +18,6 @@ product_list=ProductsViewSet.as_view({
 product_detail_list=ProductDetailViewSet.as_view({
     'get':'list',
 })
-
 # router = routers.DefaultRouter()
 # router.register(r'products', )
 # TODO make productdetails feilds as read only when viewed through django
@@ -30,6 +29,9 @@ urlpatterns = [
     url(r'^products', product_list, name='product-list'),
     url(r'^reviews/(?P<productId>[\w-]*)', reviews_list, name='review-detail'),
     url(r'^full_specs/(?P<productId>[\w-]*)',product_full_spec,name='full-spec-detail'),
+    url(r'^latest_mobiles/',LatestMobilesViewSet.as_view({
+        'get':'list',
+    })),
 ]
 
 # urlpatterns += router.urls

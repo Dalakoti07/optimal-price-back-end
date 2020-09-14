@@ -235,3 +235,13 @@ class ProductFullSpecViewSet(viewsets.ModelViewSet):
             all_specs_objects=ProductDetail.objects.all()
             serializer = self.get_serializer(all_specs_objects, many=True)
             return Response(serializer.data)
+
+@authentication_classes([])
+@permission_classes([])
+class LatestMobilesViewSet(viewsets.ModelViewSet):
+    serializer_class=ProductSerializer
+    def list(self,request):
+        allProducts=Product.objects.all().filter(product_category='mobiles')
+        subset=allProducts[:8]
+        serializer = self.get_serializer(subset, many=True)
+        return Response(serializer.data)

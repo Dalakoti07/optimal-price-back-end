@@ -27,7 +27,7 @@ def saveTheHTML(html,fileName):
 def readHTML(fileName):
     with open(fileName,'r') as htmlFile:
         return htmlFile.read()
-
+# TODO scrap the reviews also
 def getTheSpecs(classNameAttributes,html):
     specsDict={}
     specCard=html.find('div',href=False,attrs={'class':classNameAttributes['card']})

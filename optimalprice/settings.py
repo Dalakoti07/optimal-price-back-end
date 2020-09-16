@@ -140,3 +140,4 @@ REST_USE_JWT = True
 SELENIUM_DRIVER='./scarpper/driver.exe'
 
 TIME_ZONE =  'Asia/Calcutta'
+SLEEP_TIME='1'

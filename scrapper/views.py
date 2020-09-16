@@ -215,7 +215,7 @@ class ProductDetailViewSet(viewsets.ModelViewSet):
                     serialized_data=ProductDetailsSerilizer(new_product_detail_object,many=False)
                     return JsonResponse(serialized_data.data,safe=False)
             except Exception as e:
-                return Response('Invalid productId',status= 404)
+                return Response('Error: '.format(e),status= 404)
         else:
             # FIXME pagination problem https://stackoverflow.com/questions/50878730/django-rest-framework-viewset-loses-pagination-searchfilter-and-orderingfilter
             return JsonResponse(ProductDetailsSerilizer(Product.objects.all(),many=True).data,safe=False)
@@ -245,3 +245,19 @@ class LatestMobilesViewSet(viewsets.ModelViewSet):
         subset=allProducts[:8]
         serializer = self.get_serializer(subset, many=True)
         return Response(serializer.data)
+
+@authentication_classes([])
+@permission_classes([])
+class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
+    serializer_class=ProductSerializer
+    def get_queryset(self):
+        ecommerce_site=self.request.query_params.get('site')
+        category_name=self.request.query_params.get('category')
+        brand_name=self.request.query_params.get('brand')
+        print("site: {}, category: {}, brand: {}".format(ecommerce_site,category_name,brand_name))
+        if ecommerce_site=='amazon':
+            requiredQuerySet=Product.objects.all().filter(product_category=category_name,brand_name=brand_name,ecommerce_company=ecommerce_site).order_by('amazon_price')
+        else:
+            requiredQuerySet=Product.objects.all().filter(product_category=category_name,brand_name=brand_name,ecommerce_company=ecommerce_site).order_by('flipkart_price')
+        return requiredQuerySet
+

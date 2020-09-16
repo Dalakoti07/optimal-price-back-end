@@ -63,5 +63,23 @@ product categories -
     computers - no comparison , keyboard, mouse, monitors, companywise laptops
     deals of the day from flipkart only- a tag with class _1bn9xk and it has href for image
 
+15th september
+@done rename the screenshot of products path from image /128/128 to /416/416 do this at backend and remove ?q=70
+@done prepare the product price fragment screen android
+@ implement paginations
+@done api for similar items
 
-try this asynchronously
+16th
+@make screens for uncommon intersection like shoes, shirts
+@done fix that mutliple api calls and product details activity
+
+17th
+make pagination with rxjava
+scrap the ratings when getting product scrapped 
+48f34839-5528-4b63-b5c8-be7991d85860 and fc01d257-b317-432b-a7af-be1586437167 error in fetching its details
+read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html
+make sub-category in model class 
+getting distinct values:  mobiles.order_by().values('brand_name').distinct()
+
+
+make apis asynchronously

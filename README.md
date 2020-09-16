@@ -81,3 +81,6 @@ Laptops
 
 Implementation details / notes
 Category decided by amazon is final and last say
+
+
+Django ORM rules

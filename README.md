@@ -22,24 +22,25 @@ filling db apis
 Mobiles
     {{base_url}}/product_api/scrap?search=samsung phones&pages=5 (20 items)
     {{base_url}}/product_api/scrap?search=realme phones&pages=5 (49 items)
-    {{base_url}}/product_api/scrap?search=motorola phones&pages=5  (13 items) , amazon gave in 2 pages ,amazon has less items than flipkart
-    {{base_url}}/product_api/scrap?search=oppo phones&pages=5 (3 items)
+    {{base_url}}/product_api/scrap?search=motorola phones&pages=5  (13 items)
+    {{base_url}}/product_api/scrap?search=oppo phones&pages=4 (22 items)
     {{base_url}}/product_api/scrap?search=nokia phones&pages=5 (22 items)
     {{base_url}}/product_api/scrap?search=htc phones&pages=2 (10 items)
+    {{base_url}}/product_api/scrap?search=apple phones&pages=4 (24 items)
+    {{base_url}}/product_api/scrap?search=asus phones&pages=4 (12 items)
+    {{base_url}}/product_api/scrap?search=sony phones&pages=4 (3 items)
 
-    try lenovo, asus, infinix ,sony ,apple latest phone (1 page only)
+    try lenovo, asus, infinix ,sony (1 page only)
 
-Fashion
+Fashion Men and Women
     {{base_url}}/product_api/scrap?search=montrez jackets female&pages=1  (26 item from amazon, and 0 item from flipkart (flipkart classid is changing ) )
     {{base_url}}/product_api/scrap?search=ben martin jacket male&pages=1 (50 item from amazon and flipkart)
     {{base_url}}/product_api/scrap?search=puma shoes&pages=1  (106 items combined )
     {{base_url}}/product_api/scrap?search=adidas shoes&pages=1 (108 - 58 from amazon and 50 flipkart)
     {{base_url}}/product_api/scrap?search=young trendz t shirt women&pages=1  (98 - 48 from each)
     {{base_url}}/product_api/scrap?search=young trendz t shirt men&pages=1  (96 - 46 and 50 each)
-
-    try these
-    {{base_url}}/product_api/scrap?search=Urban Fashion jeans Men&pages=1  
-    {{base_url}}/product_api/scrap?search=kotty jeans Female&pages=1  
+    {{base_url}}/product_api/scrap?search=Urban Fashion jeans men&pages=1  (60 from aamzon and 18 from flip)
+    {{base_url}}/product_api/scrap?search=kotty jeans female&pages=1  (99 total)
 
 Books
     {{base_url}}/product_api/scrap?search=self help books&pages=5 (23 items with comparison)
@@ -72,6 +73,7 @@ Laptops
     left and right comparison:
         men fashion
         women fashion
+        fashion - shoes
         laptops
 
     amazon and flipkart and specs:

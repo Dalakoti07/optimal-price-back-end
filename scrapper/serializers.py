@@ -6,7 +6,8 @@ import json
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Product
-        fields = ['id','name', 'rating', 'image_url', 'flipkart_price','amazon_price','amazon_link','flipkart_link','created_at','brand_name','ecommerce_company']
+        fields = ['id','name','product_category', 'rating', 'image_url', 'flipkart_price'
+                    ,'amazon_price','amazon_link','flipkart_link','created_at','brand_name','ecommerce_company']
 
 class DealsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,8 +29,11 @@ class JSONField(serializers.Field):
 class SUBJSONField(serializers.Field):
     def to_representation(self, obj):
         complete_json= json.loads(obj)
-        sub_json=complete_json['General']
-        return sub_json
+        try:
+            sub_json=complete_json['General']
+            return sub_json
+        except Exception as e:
+            return {}
 
     def to_internal_value(self, data):
         return json.dumps(data)

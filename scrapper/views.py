@@ -87,7 +87,7 @@ def search_by_scrap(request):
         serialiseTheScrappedPagesIntoCSV(amazonItems,"./scrapper/csvs/amazon-django-{}_pages-{}.csv".format(pagesLimit,searchKey))
 
         elapsed_time = time.perf_counter() - start_time
-        if category_type=='fashion':
+        if category_type=='men fashion' or category_type=='women fashion' or category_type=='fashion':
             # merge is necessary so that it comes in right format, we pseudo merge in this case
             pseudoMergeAmazon=pseudoMergeIt(amazonItems,'amazon',category_type)
             pseudoMergeFlipkart=pseudoMergeIt(flipkartItems,'flipkart',category_type)
@@ -161,24 +161,24 @@ class ProductsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         company = self.request.query_params.get('company')
         category= self.request.query_params.get('category')
-        product_name = self.request.query_params.get('name')
+        product_name_contains = self.request.query_params.get('name_contains')
         queryset=None
 
-        print('got the queries in viewset company:{} ,category:{} ,product_name{}'.format(company,category,product_name))
-        if company and category and product_name:
-            queryset=Product.objects.all().filter(brand_name__contains=company,product_category__contains=category,name__contains=product_name)
+        print('got the queries in viewset company:{} ,category:{} ,product_name_contains{}'.format(company,category,product_name_contains))
+        if company and category and product_name_contains:
+            queryset=Product.objects.all().filter(brand_name__contains=company,product_category=category,name__contains=product_name_contains)
         elif company and category:
-            queryset=Product.objects.all().filter(brand_name__contains=company,product_category__contains=category)
-        elif category and product_name:
-            queryset=Product.objects.all().filter(product_category__contains=category,name__contains=product_name)
-        elif product_name and company:
-            queryset=Product.objects.all().filter(brand_name__contains=company,name__contains=product_name)
+            queryset=Product.objects.all().filter(brand_name__contains=company,product_category=category)
+        elif category and product_name_contains:
+            queryset=Product.objects.all().filter(product_category=category,name__contains=product_name_contains)
+        elif product_name_contains and company:
+            queryset=Product.objects.all().filter(brand_name__contains=company,name__contains=product_name_contains)
         elif company:
             queryset=Product.objects.all().filter(brand_name__contains=company)
         elif category:
-            queryset=Product.objects.all().filter(product_category__contains=category)
-        elif product_name:
-            queryset=Product.objects.all().filter(name__contains=product_name)
+            queryset=Product.objects.all().filter(product_category=category)
+        elif product_name_contains:
+            queryset=Product.objects.all().filter(name__contains=product_name_contains)
         else:
             queryset=Product.objects.all()
 
@@ -215,6 +215,7 @@ class ProductDetailViewSet(viewsets.ModelViewSet):
                     serialized_data=ProductDetailsSerilizer(new_product_detail_object,many=False)
                     return JsonResponse(serialized_data.data,safe=False)
             except Exception as e:
+                print("got error {}".format(e))
                 return Response('Error: '.format(e),status= 404)
         else:
             # FIXME pagination problem https://stackoverflow.com/questions/50878730/django-rest-framework-viewset-loses-pagination-searchfilter-and-orderingfilter
@@ -253,11 +254,11 @@ class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         ecommerce_site=self.request.query_params.get('site')
         category_name=self.request.query_params.get('category')
-        brand_name=self.request.query_params.get('brand')
-        print("site: {}, category: {}, brand: {}".format(ecommerce_site,category_name,brand_name))
+        sub_category=self.request.query_params.get('sub_category')
+        print("site: {}, category: {}, brand: {}".format(ecommerce_site,category_name,sub_category))
         if ecommerce_site=='amazon':
-            requiredQuerySet=Product.objects.all().filter(product_category=category_name,brand_name=brand_name,ecommerce_company=ecommerce_site).order_by('amazon_price')
-        else:
-            requiredQuerySet=Product.objects.all().filter(product_category=category_name,brand_name=brand_name,ecommerce_company=ecommerce_site).order_by('flipkart_price')
+            requiredQuerySet=Product.objects.all().filter(product_category=category_name,name__contains=sub_category,ecommerce_company=ecommerce_site).order_by('amazon_price')
+        elif ecommerce_site=='flipkart':
+            requiredQuerySet=Product.objects.all().filter(product_category=category_name,name__contains=sub_category,ecommerce_company=ecommerce_site).order_by('flipkart_price')
         return requiredQuerySet
 

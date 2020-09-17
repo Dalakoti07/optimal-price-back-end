@@ -74,12 +74,17 @@ product categories -
 @done fix that mutliple api calls and product details activity
 
 17th
-make pagination with rxjava
+@done make pagination with rxjava
+@fill the fashion database again now as men fashion and women fashion (mandatory)
+@ make subcategory 
+@ make pagination with rxjava in split act
+@ see all the products in db in android , and be happy and check the list from readme
+
+music
+glide issue
+make glide to crop images in different manner such that shoes and camera also look good as they have width>height
+fix amazon prize comming zero as minimum price
 scrap the ratings when getting product scrapped 
 48f34839-5528-4b63-b5c8-be7991d85860 and fc01d257-b317-432b-a7af-be1586437167 error in fetching its details
 read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html
-make sub-category in model class 
-getting distinct values:  mobiles.order_by().values('brand_name').distinct()
-
-
 make apis asynchronously

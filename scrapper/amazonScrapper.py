@@ -84,7 +84,12 @@ def scrapAPage(driver,keyword='mobile',callFromMain=True,page_number=0):
         typeOfCardInARow='div'
         print('fashion keyword is {}'.format(keyword))
         classNameAttributes=classNameAttributes["amazon"]['multiple']
-        product_category='fashion'
+        if (('women' in keyword) or ('woman' in keyword) or ('female' in keyword) or ('girl' in keyword) ):
+            product_category='women fashion'
+        elif (('men' in keyword) or ('man' in keyword) or ('male' in keyword) or ('boy' in keyword)):
+            product_category='men fashion'
+        else:
+            product_category='fashion'
     else:
         print('not handled that')
         driver.close()

@@ -158,9 +158,8 @@ def scrapMultiplePages(driver,keyword,pageCount):
     for p in range(0,pageCount):
         received_items,product_category = scrapAPage(driver=driver,keyword=keyword,callFromMain=False,page_number=p+1)
         productsFromAllPages= list(received_items) + productsFromAllPages 
+    #praoduct_category returned from here wont affect anything 
     return productsFromAllPages,product_category
-def saveHTML(content):
-    pass
 
 def scrapDeals(driver,callFromMain=False):
     base_url_deals='https://www.flipkart.com'

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-
+import datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -130,12 +130,24 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
 
 REST_USE_JWT = True
+
+# https://jpadilla.github.io/django-rest-framework-jwt/
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER':'authApp.customJWTUtils.jwt_response_payload_handler',
+
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_LEEWAY': 1000,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+    'JWT_AUTH_COOKIE': None,
+    'JWT_PAYLOAD_HANDLER':'authApp.customJWTUtils.jwt_payload_handler',
+}
 
 SELENIUM_DRIVER='./scarpper/driver.exe'
 

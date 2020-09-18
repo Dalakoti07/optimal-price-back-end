@@ -90,7 +90,7 @@ def getTheImages(classNameAttributes,html):
         allImages=allImages[0:6]
         i=1
         for image in allImages:
-            imagesDict["image-{}".format(i)]=re.search('https://[a-z,0-9,\.,\/,\-,\?,\=]*',image["style"]).group(0)
+            imagesDict["image-{}".format(i)]=re.search('https://[a-z,0-9,\.,\/,\-,\?,\=]*',image["style"]).group(0).replace('/128/128','/416/416')
             i=i+1
         return imagesDict
     except Exception as e:

@@ -14,7 +14,7 @@ from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,d
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 from .ProductDetailsScrapper import scrapTheDetails
 from rest_framework.decorators import authentication_classes, permission_classes
-
+from rest_framework.authentication import BasicAuthentication
 
 # selenium and web scrapping stuff
 import argparse
@@ -25,10 +25,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import json
 from rest_framework.decorators import api_view
+from authApp.permissions import IsAdminUser,IsLoggedInUserOrAdmin
 # use selenium service to avoid too much rersource usage
 import sys 
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
+
+# make driver for getting all specs
+productDetailsService = Service('./driver')
+# FIXME uncommment them 
+# productDetailsService.start()
+# productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
+# TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
 # helper function
 # TODO remove below func in utils file, it wont be needed if below task is done
@@ -53,6 +61,8 @@ def returnJsonResponseFromProductList(productList,totalTime):
     return response
 
 # TODO make the readable time stamp and then put that timestamp in each product and then query that back
+@authentication_classes([])
+@permission_classes([])
 def search_by_scrap(request):
     if request.method=='GET':
         
@@ -203,11 +213,8 @@ class ProductDetailViewSet(viewsets.ModelViewSet):
                     return JsonResponse(serialized_data.data,safe=False)
                 else:
                     print('scraping the data')
-                    service = Service('./driver')
-                    service.start()
-                    driver=webdriver.Remote(service.service_url)
                     print('getting the product {}'.format(productObject.name))
-                    json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=driver,url=productObject.flipkart_link,callFromMain=False)
+                    json_spec_all,json_images,reviewsDict = scrapTheDetails(driver=productDetailsdriver,url=productObject.flipkart_link,callFromMain=False)
                     # print('got the spec len{} and images len{} and reviews: {}'.format(len(json_spec_all),len(json_images),len(reviewsDict)))
                     saveProductDetailsToDB(productObject,json_spec_all,json_images,reviewsDict)
                     # get the saved data and return it

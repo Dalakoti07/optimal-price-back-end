@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-
+from scrapper.models import Product
 
 class User(AbstractUser):
     username = models.CharField(blank=True, null=True,max_length=20)
@@ -27,3 +27,30 @@ class UserProfile(models.Model):
     zip = models.CharField(max_length=9,blank=True)
     photo = models.ImageField(upload_to='uploads',null=True, blank=True)
 
+class Cart(models.Model):
+    # cart would be either shopping cart or wish list cart
+    cartChoice=(
+        ('Shopping Cart','Shopping Cart'),
+        ('wishList','wishList')
+    )
+    # user can have two types of card thus foreign key
+    cart_type=models.CharField(max_length=20,choices=cartChoice,null=False) 
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=False)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return  self.user.first_name +"'s "+self.cart_type
+
+class CartItem(models.Model):
+    # each card item would be a product with some count, so one to one field
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=False)
+    quantity = models.IntegerField(default=1)
+    # a cart can have many cartItems thus each cartItem maintain record to which cart it belongs, and if cart is deleted all the items in it would also be deleted
+    cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
+
+    each_price=models.FloatField(blank=False)
+    total_price = models.FloatField(blank=False,default=each_price)
+
+    def __str__(self):
+        return  self.cart.user.first_name +"'s "+self.cart.cart_type + " 's "+self.product.name
+    

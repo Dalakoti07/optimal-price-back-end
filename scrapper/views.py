@@ -10,11 +10,13 @@ from rest_framework.parsers import JSONParser
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage, scrapDeals as flipkartDeals
-from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt,saveProductDetailsToDB
+from .ScrapperUtils import serialiseTheScrappedPagesIntoCSV,mergeList,saveToDB,deserialiseTheListFromCSV,pseudoMergeIt,saveProductDetailsToDB,returnJsonResponseFromProductList
 from .amazonScrapper import scrapAPage as amazonScrapAPage,scrapMultiplePages as amazonScrapMultiplePage
 from .ProductDetailsScrapper import scrapTheDetails
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import BasicAuthentication
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import permissions
 
 # selenium and web scrapping stuff
 import argparse
@@ -38,31 +40,10 @@ productDetailsService = Service('./driver')
 # productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
-# helper function
-# TODO remove below func in utils file, it wont be needed if below task is done
-def returnJsonResponseFromProductList(productList,totalTime):
-    data=[]
-    for p in productList:
-        data.append({
-            "name":p.name,
-            "rating":p.rating,
-            "image_url":p.image_url,
-            "price":p.price,
-            "brand_name":p.brand_name,
-            "amazon_link":p.amazon_link,
-            "flipkart_link":p.flipkart_link,
-            "product_category":p.product_category
-        })
-    response={
-        "time-taken":str(totalTime),
-        "length":len(data),
-        "data":data
-    }
-    return response
 
 # TODO make the readable time stamp and then put that timestamp in each product and then query that back
-@authentication_classes([])
-@permission_classes([])
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
 def search_by_scrap(request):
     if request.method=='GET':
         
@@ -121,6 +102,7 @@ def search_by_scrap(request):
         # return JsonResponse('it should be done',safe=False)
 
 # TODO convert to viewset
+@api_view(['GET'])
 def fetchTheDeals(request):
     if request.method=='GET':
         allDeals=Deals.objects.all()
@@ -147,8 +129,6 @@ def fetchTheDeals(request):
     else:
         return HttpResponseBadRequest('Method Not allowed ')
 
-@authentication_classes([])
-@permission_classes([])
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     def list(self,request,productId=None):
@@ -163,11 +143,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(all_reviews, many=True)
             return Response(serializer.data)
 
-@authentication_classes([])
-@permission_classes([])
 class ProductsViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    
     def get_queryset(self):
         company = self.request.query_params.get('company')
         category= self.request.query_params.get('category')
@@ -194,9 +171,6 @@ class ProductsViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-from rest_framework.pagination import PageNumberPagination
-@authentication_classes([])
-@permission_classes([])
 class ProductDetailViewSet(viewsets.ModelViewSet):
     # queryset = Product.objects.all()
     serializer_class = ProductDetailsSerilizer
@@ -228,8 +202,6 @@ class ProductDetailViewSet(viewsets.ModelViewSet):
             # FIXME pagination problem https://stackoverflow.com/questions/50878730/django-rest-framework-viewset-loses-pagination-searchfilter-and-orderingfilter
             return JsonResponse(ProductDetailsSerilizer(Product.objects.all(),many=True).data,safe=False)
 
-@authentication_classes([])
-@permission_classes([])
 class ProductFullSpecViewSet(viewsets.ModelViewSet):
     serializer_class = ProductFullSpecsSerializer
     def list(self,request,productId=None):
@@ -244,8 +216,6 @@ class ProductFullSpecViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(all_specs_objects, many=True)
             return Response(serializer.data)
 
-@authentication_classes([])
-@permission_classes([])
 class LatestMobilesViewSet(viewsets.ModelViewSet):
     serializer_class=ProductSerializer
     def list(self,request):
@@ -254,8 +224,6 @@ class LatestMobilesViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(subset, many=True)
         return Response(serializer.data)
 
-@authentication_classes([])
-@permission_classes([])
 class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
     serializer_class=ProductSerializer
     def get_queryset(self):

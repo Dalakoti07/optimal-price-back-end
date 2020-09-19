@@ -11,6 +11,28 @@ else:
 import csv
 import json
 from difflib import SequenceMatcher
+
+def returnJsonResponseFromProductList(productList,totalTime):
+    data=[]
+    for p in productList:
+        data.append({
+            "name":p.name,
+            "rating":p.rating,
+            "image_url":p.image_url,
+            "price":p.price,
+            "brand_name":p.brand_name,
+            "amazon_link":p.amazon_link,
+            "flipkart_link":p.flipkart_link,
+            "product_category":p.product_category
+        })
+    response={
+        "time-taken":str(totalTime),
+        "length":len(data),
+        "data":data
+    }
+    return response
+
+
 def cleanTheName(currentString):
     currentString=currentString.replace('(','')
     currentString=currentString.replace(')','')

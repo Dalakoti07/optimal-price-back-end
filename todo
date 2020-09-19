@@ -81,13 +81,17 @@ product categories -
 @ see all the products in db in android , and be happy and check the list from readme
 @fix amazon prize comming zero as minimum price
 
-18th
+18th september
 @ done glide issue
 @ make glide to crop images in different manner such that shoes and camera also look good as they have width>height
+
+19th september 
 user create new, login ,update profile and settings fragment
-add to cart or add to favorite list
+add to cart or add to favorite list make bottomsheet like flipkart
+post a review
+make profileApi like cartApi
 item click on category in product home fragment
 make deals to be update everyday
-handle rating on client side, i means make ratings 5,4,3,2,1 in ratio 5:4:3:2:1 
 read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html
 make apis asynchronously
+handle rating on client side, i means make ratings 5,4,3,2,1 in ratio 5:4:3:2:1 

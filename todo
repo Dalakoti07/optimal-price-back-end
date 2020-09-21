@@ -86,12 +86,34 @@ product categories -
 @ make glide to crop images in different manner such that shoes and camera also look good as they have width>height
 
 19th september 
-user create new, login ,update profile and settings fragment
-add to cart or add to favorite list make bottomsheet like flipkart
-post a review
-make profileApi like cartApi
-item click on category in product home fragment
-make deals to be update everyday
-read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html
+@done user create new, login ,update profile and settings fragment
+@done make profileApi like cartApi
+@ add to cart or add to favorite list make bottomsheet like flipkart
+
+19th september
+@done zip or flatmap the apis in homefragment
+@done item click on category in product home fragment
+@done put the activity transitions in each activity lauch, and put transition in graph also 
+@done profile api integrations
+@done delete the item from cart or wishlist and increment cart item count
+@done screen for search screen and wishlist
+
+21st september
+@ get the category list from server
+@ make deals to be update everyday
+@ use toasty
+@ screen for
+    @ 404 errror and 
+    @ cart is empty
+@ see zip operator error handling in producthomefragment
+@ loading effect home activity
+
+2 way authentication using otp
 make apis asynchronously
-handle rating on client side, i means make ratings 5,4,3,2,1 in ratio 5:4:3:2:1 
+implement search in android side
+remove the code from oncreateview and put that in onviewcreated and see performance
+upload photo using android
+handle progessbar in each api calls
+
+
+read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html

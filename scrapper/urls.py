@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 from scrapper import views
-from .views import ReviewViewSet,ProductsViewSet,ProductDetailViewSet,ProductFullSpecViewSet,LatestMobilesViewSet,ecommerceBasedSearchViewSet
+from .views import ReviewViewSet,ProductsViewSet,ProductDetailViewSet,ProductFullSpecViewSet,LatestMobilesViewSet,ecommerceBasedSearchViewSet,CompareMobilesViewSet,getSubCategories
 
 router = routers.SimpleRouter() 
 
@@ -32,9 +32,13 @@ urlpatterns = [
     url(r'^latest_mobiles/',LatestMobilesViewSet.as_view({
         'get':'list',
     })),
+    url(r'^compare_mobiles/',CompareMobilesViewSet.as_view({
+        'get':'list',
+    })),
     url(r'^site',ecommerceBasedSearchViewSet.as_view({
         'get':'list',
     })),
+    url(r'categories/',getSubCategories)
 ]
 
 # urlpatterns += router.urls

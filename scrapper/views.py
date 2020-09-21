@@ -7,6 +7,7 @@ from .models import Product,Deals,ProductDetail,Review
 from django.http import HttpResponse, JsonResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from datetime import datetime
 
 # utils function import
 from .flipkartScrapper import scrapAPage as flipkartScrapAPage,scrapMultiplePages as flipkartScrapMultiplePage, scrapDeals as flipkartDeals
@@ -19,6 +20,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import permissions
 
 # selenium and web scrapping stuff
+import random
 import argparse
 import time
 from bs4 import BeautifulSoup
@@ -35,7 +37,6 @@ from rest_framework.response import Response
 
 # make driver for getting all specs
 productDetailsService = Service('./driver')
-# FIXME uncommment them 
 # productDetailsService.start()
 # productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
@@ -104,30 +105,35 @@ def search_by_scrap(request):
 # TODO convert to viewset
 @api_view(['GET'])
 def fetchTheDeals(request):
-    if request.method=='GET':
-        allDeals=Deals.objects.all()
-        if len(allDeals)==0:
-            # scrap new deals
-            service = Service('./driver')
-            service.start()
-            driver=webdriver.Remote(service.service_url)
-            deals= flipkartDeals(driver=driver,callFromMain=False)
-            # TODO see if this does not close the product scrap service
-            driver.close()
-            if not deals:
-                return HttpResponse('something broke')
-            for key in deals:
-                try:
-                    deal = Deals(sales_link=deals[key]['href_link'],sales_image_link=deals[key]['image_url'])
-                    deal.save()
-                except Exception as e:
-                    print('error in saving deal object {}'.format(e))
-            # done
+    allDeals=Deals.objects.all()
+    todayDate=datetime.now()
+    old=False
+    if len(allDeals)>0:
+        if allDeals[0].created_at.day==todayDate.day:
+            old=False
         else:
-            serializer=DealsSerializer(allDeals,many=True,context={'request': request})
-            return JsonResponse(serializer.data, safe=False)
+            old=True
+    if len(allDeals)==0 or old:
+        # scrap new deals
+        service = Service('./driver')
+        service.start()
+        driver=webdriver.Remote(service.service_url)
+        deals= flipkartDeals(driver=driver,callFromMain=False)
+        driver.close()
+        if not deals:
+            return HttpResponse('something broke')
+        for key in deals:
+            try:
+                deal = Deals(sales_link=deals[key]['href_link'],sales_image_link=deals[key]['image_url'].replace('/50/50/','/480/480/'))
+                deal.save()
+            except Exception as e:
+                print('error in saving deal object {}'.format(e))
+        # done
+        serializer=DealsSerializer(Deals.objects.all(),many=True,context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
     else:
-        return HttpResponseBadRequest('Method Not allowed ')
+        serializer=DealsSerializer(allDeals,many=True,context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
@@ -197,7 +203,7 @@ class ProductDetailViewSet(viewsets.ModelViewSet):
                     return JsonResponse(serialized_data.data,safe=False)
             except Exception as e:
                 print("got error {}".format(e))
-                return Response('Error: '.format(e),status= 404)
+                return Response('Error: {}'.format(e),status= 404)
         else:
             # FIXME pagination problem https://stackoverflow.com/questions/50878730/django-rest-framework-viewset-loses-pagination-searchfilter-and-orderingfilter
             return JsonResponse(ProductDetailsSerilizer(Product.objects.all(),many=True).data,safe=False)
@@ -224,6 +230,19 @@ class LatestMobilesViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(subset, many=True)
         return Response(serializer.data)
 
+class CompareMobilesViewSet(viewsets.ModelViewSet):
+    serializer_class=ProductSerializer
+    def list(self,request):
+        allProducts=Product.objects.all().filter(product_category='mobiles')
+        maxLen=len(allProducts)
+        if maxLen>=11 :
+            indexes=random.sample(range(1,maxLen),10)
+            mobileList=[ allProducts[i] for i in indexes ]
+            serializer = self.get_serializer(mobileList, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(self.get_serializer(allProducts,many=True).data)
+
 class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
     serializer_class=ProductSerializer
     def get_queryset(self):
@@ -237,3 +256,8 @@ class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
             requiredQuerySet=Product.objects.all().filter(product_category=category_name,name__contains=sub_category,ecommerce_company=ecommerce_site).order_by('flipkart_price')
         return requiredQuerySet
 
+@api_view(["GET"])
+def getSubCategories(request):
+    with open('./scrapper/ProductSubCategory.json') as json_file:
+        data = json.load(json_file)
+        return Response(data)

@@ -42,6 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request):
+        print('create account post data: ',request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         savedInstance=serializer.save()
@@ -65,7 +66,7 @@ def getUserModelFromToken(auth_header):
     return User.objects.get(id=userId)
     
 
-@api_view(['GET','POST','PUT'])
+@api_view(['GET','POST','PUT','DELETE'])
 def cartAPI(request):
     cart_type=request.GET['type']
     auth_header=request.META['HTTP_AUTHORIZATION'] 
@@ -109,7 +110,6 @@ def cartAPI(request):
                 return Response(CartItemSerializer(newCartItem,many=False).data)
             
         elif request.method=='PUT':
-
             updateCartItemInfo=request.data
             itemId=updateCartItemInfo['item_id']
             itemCount=int(updateCartItemInfo['count'])
@@ -119,6 +119,19 @@ def cartAPI(request):
                     item.quantity=itemCount
                     item.save()
                     return Response(CartItemSerializer(item,many=False).data)
+                else:
+                    return Response({'message': 'You are not authorizated'},status=status.HTTP_403_FORBIDDEN)
+            except Exception as e:
+                return Response({'message':'Invalid cart Id'},status=status.HTTP_400_BAD_REQUEST)
+        elif request.method=='DELETE':
+            # delete the cart item
+            cartRequested=request.data
+            itemId=cartRequested['item_id']
+            try:
+                item=CartItem.objects.get(id=itemId)
+                if request.user == item.cart.user:
+                    item.delete()
+                    return Response({'message':'Sucess!'})
                 else:
                     return Response({'message': 'You are not authorizated'},status=status.HTTP_403_FORBIDDEN)
             except Exception as e:
@@ -162,3 +175,4 @@ def profileApi(request):
             return Response( {'token':token,'user':UserSerializer(userObject).data},200)
         else:
             return Response({'message':'invalid data'},status=400)
+

@@ -116,12 +116,14 @@ deployment
 
 
 aws http://ec2-13-233-88-168.ap-south-1.compute.amazonaws.com:8000/
-
+my id 1.38.202.174
 
 getting multiple deals fix that
 upload photo using android
 unable to logout in android
 - 2 
+
+16:13
 
 make apis asynchronously
 handle progessbar in each api calls

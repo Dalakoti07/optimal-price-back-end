@@ -36,7 +36,12 @@ from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
 # make driver for getting all specs
-productDetailsdriver = webdriver.Chrome('./driver')
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
+productDetailsdriver = webdriver.Chrome('./driver',chrome_options=chrome_options)
 # productDetailsService.start()
 # productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/

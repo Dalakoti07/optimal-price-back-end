@@ -47,7 +47,7 @@ def OTPView(request):
     
     if request.method=='GET':
         userPhoneNumber=request.GET['number']
-        print("validating otp for ",userPhoneNumber)
+        print("getting otp for ",userPhoneNumber)
         results=askForOTPFromMsg91(userPhoneNumber)
         if results.status_code ==200:
             return Response({'message':"OTP successfully generated "})

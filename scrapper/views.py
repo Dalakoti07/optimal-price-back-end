@@ -37,8 +37,8 @@ from rest_framework.response import Response
 
 # make driver for getting all specs
 productDetailsService = Service('./driver')
-# productDetailsService.start()
-# productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
+productDetailsService.start()
+productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
 

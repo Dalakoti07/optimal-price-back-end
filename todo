@@ -10,11 +10,11 @@
         Scrap 150% of pages used in flipkart as amzon as less product per page
 
 7th september
-    @done not getting brand names in fashion products
-    @done avoid the duplicacy of item by using name as hash and making it unique
-    @done why double products count when returned by serialiser
-    @done price are coming null and thus most of data is being thrown away ,debug it
-    @done why is there difference between serialised csv and api response 
+    - not getting brand names in fashion products
+    - avoid the duplicacy of item by using name as hash and making it unique
+    - why double products count when returned by serialiser
+    - price are coming null and thus most of data is being thrown away ,debug it
+    - why is there difference between serialised csv and api response 
     # https://stackoverflow.com/questions/44182014/python-lib-beautiful-soup-using-aiohttp
     # https://stackoverflow.com/questions/34829329/how-to-open-a-link-in-new-tab-chrome-using-selenium-webdriver
     # https://docs.djangoproject.com/en/3.1/topics/async/
@@ -55,26 +55,26 @@ TODO change the data types of model Product attribute wherever necessary
 
 
 product categories - 
-    @done mobiles 
+    - mobiles 
     electronics - pendrive, headphones, speakers and 
-    @done books 
-    @done fashion
+    - books 
+    - fashion
     health - fitness band, bp machines, and exercise machine 
     computers - no comparison , keyboard, mouse, monitors, companywise laptops
     deals of the day from flipkart only- a tag with class _1bn9xk and it has href for image
 
 15th september
-@done rename the screenshot of products path from image /128/128 to /416/416 do this at backend and remove ?q=70
-@done prepare the product price fragment screen android
+- rename the screenshot of products path from image /128/128 to /416/416 do this at backend and remove ?q=70
+- prepare the product price fragment screen android
 @ implement paginations
-@done api for similar items
+- api for similar items
 
 16th
 @make screens for uncommon intersection like shoes, shirts
-@done fix that mutliple api calls and product details activity
+- fix that mutliple api calls and product details activity
 
 17th
-@done make pagination with rxjava
+- make pagination with rxjava
 @fill the fashion database again now as men fashion and women fashion (mandatory)
 @ make subcategory 
 @ make pagination with rxjava in split act
@@ -86,17 +86,17 @@ product categories -
 @ make glide to crop images in different manner such that shoes and camera also look good as they have width>height
 
 19th september 
-@done user create new, login ,update profile and settings fragment
-@done make profileApi like cartApi
+- user create new, login ,update profile and settings fragment
+- make profileApi like cartApi
 @ add to cart or add to favorite list make bottomsheet like flipkart
 
 19th september
-@done zip or flatmap the apis in homefragment
-@done item click on category in product home fragment
-@done put the activity transitions in each activity lauch, and put transition in graph also 
-@done profile api integrations
-@done delete the item from cart or wishlist and increment cart item count
-@done screen for search screen and wishlist
+- zip or flatmap the apis in homefragment
+- item click on category in product home fragment
+- put the activity transitions in each activity lauch, and put transition in graph also 
+- profile api integrations
+- delete the item from cart or wishlist and increment cart item count
+- screen for search screen and wishlist
 
 21st september
 @ get the category list from server
@@ -110,8 +110,8 @@ product categories -
 
 
 22nd september
-@done 2 way authentication using otp
-@done integrate in android
+- 2 way authentication using otp
+- integrate in android
 deployment
 
 
@@ -119,7 +119,7 @@ deployment
 getting multiple deals fix that
 upload photo using android
 unable to logout in android
-@done 2 
+- 2 
 
 make apis asynchronously
 handle progessbar in each api calls

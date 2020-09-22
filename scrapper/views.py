@@ -114,6 +114,8 @@ def fetchTheDeals(request):
         else:
             old=True
     if len(allDeals)==0 or old:
+        if old:
+            allDeals.delete()
         # scrap new deals
         service = Service('./driver')
         service.start()

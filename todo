@@ -108,12 +108,17 @@ product categories -
 @ see zip operator error handling in producthomefragment
 @ loading effect home activity
 
-2 way authentication using otp
+@done 2 way authentication using otp
+integrate in android
+deployment
+getting multiple deals fix that
+upload photo using android
+unable to logout in android
+@done 2 
+
 make apis asynchronously
+handle progessbar in each api calls
 implement search in android side
 remove the code from oncreateview and put that in onviewcreated and see performance
-upload photo using android
-handle progessbar in each api calls
-
 
 read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html

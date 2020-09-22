@@ -9,6 +9,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # customize the fields count and name u want to be exposed via json api
         fields = ('title', 'dob', 'address', 'country', 'city', 'zip', 'photo')
 
+# this serializer used for changing the profile
 class UserSerializerWithoutPassword(serializers.HyperlinkedModelSerializer):
     profile = UserProfileSerializer(required=True)
 
@@ -21,7 +22,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name','password', 'last_name', 'profile')
+        fields = ('id', 'email', 'first_name','password', 'last_name', 'profile','mobile')
         # Note the the password field is set as a write_only field. 
         # Meaning that it will be used for deserialization(creating the model) but not for serialization.
         extra_kwargs = {'password': {'write_only': True}}

@@ -8,6 +8,7 @@ from scrapper.models import Product
 class User(AbstractUser):
     username = models.CharField(blank=True, null=True,max_length=20)
     email = models.EmailField(_('email address'), unique=True)
+    mobile=models.CharField(null=False,unique=True,max_length=10)
 
     # no email would be asked in login creds instead of username
     USERNAME_FIELD = 'email'

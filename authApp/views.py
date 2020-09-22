@@ -42,20 +42,18 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request):
-        print('create account post data: ',request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         savedInstance=serializer.save()
-        # print("saved instance is ",savedInstance)
-        payload = jwt_payload_handler(savedInstance)
-        token = jwt_encode_handler(payload)
+        # access token would be given only when otp verifies
+
         # create user's wishlist and shopping list cart
         shoppingCart=Cart(cart_type='Shopping Cart',user=savedInstance)
         wishList=Cart(cart_type='wishList',user=savedInstance)
         shoppingCart.save()
         wishList.save()
 
-        return Response({'token':token,'user':serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'user':serializer.data}, status=status.HTTP_201_CREATED)
 
 def getUserModelFromToken(auth_header):
     # parse the token

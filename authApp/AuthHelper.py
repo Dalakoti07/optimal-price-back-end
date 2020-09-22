@@ -24,8 +24,8 @@ def validateTheOTPFromMsg91(userPhoneNumber,otpByUser):
 @permission_classes([])
 def OTPView(request):
     if request.method=='POST':
-        print("validating otp")
         userPhoneNumber=request.data['number']
+        print("validating otp for :",userPhoneNumber)
         otp=request.data['otp']
         results=validateTheOTPFromMsg91(userPhoneNumber,otp)
         jsonResponse=results.json()
@@ -47,6 +47,7 @@ def OTPView(request):
     
     if request.method=='GET':
         userPhoneNumber=request.GET['number']
+        print("validating otp for ",userPhoneNumber)
         results=askForOTPFromMsg91(userPhoneNumber)
         if results.status_code ==200:
             return Response({'message':"OTP successfully generated "})

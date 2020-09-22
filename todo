@@ -99,14 +99,14 @@ product categories -
 - screen for search screen and wishlist
 
 21st september
-@ get the category list from server
-@ make deals to be update everyday
-@ use toasty
-@ screen for
-    @ 404 errror and 
-    @ cart is empty
-@ see zip operator error handling in producthomefragment
-@ loading effect home activity
+ -get the category list from server
+ - make deals to be update everyday
+ - use toasty
+ - screen for
+     - 404 errror and 
+     - cart is empty
+ - see zip operator error handling in producthomefragment
+ - loading effect home activity
 
 
 22nd september
@@ -114,6 +114,8 @@ product categories -
 - integrate in android
 deployment
 
+
+aws http://ec2-13-233-88-168.ap-south-1.compute.amazonaws.com:8000/
 
 
 getting multiple deals fix that

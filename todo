@@ -108,9 +108,14 @@ product categories -
 @ see zip operator error handling in producthomefragment
 @ loading effect home activity
 
+
+22nd september
 @done 2 way authentication using otp
-integrate in android
+@done integrate in android
 deployment
+
+
+
 getting multiple deals fix that
 upload photo using android
 unable to logout in android
@@ -119,6 +124,8 @@ unable to logout in android
 make apis asynchronously
 handle progessbar in each api calls
 implement search in android side
+remove the cart api from auth/ and put it in 
+handle the worst case that what if app does not have internet at all
 remove the code from oncreateview and put that in onviewcreated and see performance
 
 read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html

@@ -194,9 +194,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     print("main function directly called and its is running and keyword searched :"+args.item)
-    service = Service('./driver')
-    service.start()
-    driver=webdriver.Remote(service.service_url) 
+    from CustomChromeDriverUtils import getChromeCustomOptions
+    driver=webdriver.Chrome(options =getChromeCustomOptions())
     if args.item=='deals':
         scrapDeals(driver,callFromMain= True)
     else:

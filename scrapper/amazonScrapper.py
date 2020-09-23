@@ -143,14 +143,14 @@ def scrapMultiplePages(driver,keyword,pageCount):
 if __name__ == "__main__":
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
+    from CustomChromeDriverUtils import getChromeCustomOptions
     parser = argparse.ArgumentParser()
     parser.add_argument("--item", help="enter the item name you want to search on flipkart",type=str)
     args = parser.parse_args()
 
     print("main function directly called and its is running and keyword searched :"+args.item)
-    service = Service('./driver')
-    service.start()
-    driver=webdriver.Remote(service.service_url) 
+    
+    driver=webdriver.Chrome(options=getChromeCustomOptions()) 
     
     items,_ =scrapAPage(driver,args.item)
     print(items)

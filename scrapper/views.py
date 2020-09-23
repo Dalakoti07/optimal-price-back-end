@@ -37,8 +37,8 @@ from rest_framework.response import Response
 from .CustomChromeDriverUtils import getChromeCustomOptions
 # make driver for getting all specs
 
-productDetailsdriver = webdriver.Chrome(options=getChromeCustomOptions())
-
+productDetailsdriver = webdriver.Chrome('/home/ubuntu/optimalprice/driver',options=getChromeCustomOptions())
+#productDetailsdriver = webdriver.Chrome(options=getChromeCustomOptions())
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
 
@@ -254,8 +254,15 @@ class ecommerceBasedSearchViewSet(viewsets.ModelViewSet):
             requiredQuerySet=Product.objects.all().filter(product_category=category_name,name__contains=sub_category,ecommerce_company=ecommerce_site).order_by('flipkart_price')
         return requiredQuerySet
 
+import os
+from django.conf import settings
 @api_view(["GET"])
 def getSubCategories(request):
-    with open('./scrapper/ProductSubCategory.json') as json_file:
-        data = json.load(json_file)
+    file =open('/home/ubuntu/optimalprice/static/ProductSubCategory.json')
+    data =json.load(file)
+    return Response(data)
+    '''
+    with open('/home/ubuntu/optimalprice/static/ProductSubCategory.json') as json_file:
+        data = json.loads(json_file)
         return Response(data)
+    '''

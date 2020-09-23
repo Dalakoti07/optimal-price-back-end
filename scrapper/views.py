@@ -38,19 +38,14 @@ from rest_framework.response import Response
 # make driver for getting all specs
 from selenium.webdriver.chrome.options import Options
 options = Options()
-options.binary_location ="/usr/bin/google-chrome"
-chrome_path ="~/ubuntu/optimalprice/driver"
+#options.binary_location ="/usr/bin/google-chrome"
+#chrome_path ="~/ubuntu/optimalprice/driver"
 
 
-#chrome_options = webdriver.ChromeOptions()
-#chrome_options.add_argument('--headless')
-#chrome_options.add_argument('--no-sandbox')
-#chrome_options.add_argument('--disable-dev-shm-usage')
 
-#from selenium.webdriver.chrome.options import Options
-#options = Options()
-#options.headless = True
-productDetailsdriver = webdriver.Chrome(executable_path=chrome_path,chrome_options=options)
+options.add_argument("--headless")
+options.add_argument("window-size=1400,1500")
+productDetailsdriver = webdriver.Chrome(options=options)
 
 #productDetailsdriver = webdriver.Chrome('/home/ubuntu/optimalprice/driver',chrome_options=chrome_options)
 # productDetailsService.start()

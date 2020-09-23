@@ -26,7 +26,7 @@ import time
 from bs4 import BeautifulSoup
 from requests import get
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.service import Service
 import json
 from rest_framework.decorators import api_view
 from authApp.permissions import IsAdminUser,IsLoggedInUserOrAdmin
@@ -34,22 +34,11 @@ from authApp.permissions import IsAdminUser,IsLoggedInUserOrAdmin
 import sys 
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
-
+from .CustomChromeDriverUtils import getChromeCustomOptions
 # make driver for getting all specs
-from selenium.webdriver.chrome.options import Options
-options = Options()
-#options.binary_location ="/usr/bin/google-chrome"
-#chrome_path ="~/ubuntu/optimalprice/driver"
 
+productDetailsdriver = webdriver.Chrome(options=getChromeCustomOptions())
 
-
-options.add_argument("--headless")
-options.add_argument("window-size=1400,1500")
-productDetailsdriver = webdriver.Chrome(options=options)
-
-#productDetailsdriver = webdriver.Chrome('/home/ubuntu/optimalprice/driver',chrome_options=chrome_options)
-# productDetailsService.start()
-# productDetailsdriver=webdriver.Remote(productDetailsService.service_url)
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
 
@@ -67,9 +56,7 @@ def search_by_scrap(request):
             print(e)
         
         # start service of selenium and prepare the driver
-        service = Service('./driver')
-        service.start()
-        driver=webdriver.Remote(service.service_url)
+        driver=webdriver.Chrome(getChromeCustomOptions())
 
         if not pagesLimit:
             pagesLimit=5
@@ -128,9 +115,7 @@ def fetchTheDeals(request):
         if old:
             allDeals.delete()
         # scrap new deals
-        service = Service('./driver')
-        service.start()
-        driver=webdriver.Remote(service.service_url)
+        driver=webdriver.Chrome(getChromeCustomOptions())
         deals= flipkartDeals(driver=driver,callFromMain=False)
         driver.close()
         if not deals:

@@ -1,0 +1,115 @@
+{
+    "mobiles":[{
+            "category":"mobiles",
+            "subcategory":"apple",
+            "imageLink":"https://media.idownloadblog.com/wp-content/uploads/2018/07/Apple-logo-black-and-white.png",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"samsung",
+            "imageLink":"https://turbologo.com/articles/wp-content/uploads/2019/07/samsung-logo-2015.jpg.webp",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Realme",
+            "imageLink" :"https://www.livemint.com/rf/Image-621x414/LiveMint/Period2/2018/11/16/Photos/Home%20Page/GO%20(77)-kjmB--621x414@LiveMint.png",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Moto",
+            "imageLink" :"https://cdn.britannica.com/34/128734-050-2AF822A1/Motorola-logo-2005.jpg",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Oppo",
+            "imageLink" :"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/OPPO_LOGO_2019.png/1200px-OPPO_LOGO_2019.png",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Nokia",
+            "imageLink" :"https://i.pinimg.com/originals/29/00/a4/2900a416b7f9a0a30d4bd99af34ea1bc.png",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"HTC",
+            "imageLink" :"https://1000logos.net/wp-content/uploads/2017/02/Colors-HTC-Logo.jpg",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Asus",
+            "imageLink" :"https://dlcdnimgs.asus.com/websites/IN/Sno/91059.jpg",
+            "descriptive":true
+        },{
+            "category":"mobiles",
+            "subcategory":"Sony",
+            "imageLink" :"https://1000logos.net/wp-content/uploads/2019/08/Sony-Logo-1961%E2%80%931962.jpg",
+            "descriptive":true
+        }
+    ],
+    "men fashion":[
+        {
+            "category":"men fashion",
+            "subcategory":"jacket",
+            "imageLink" :"https://assets.myntassets.com/f_webp,h_560,q_90,w_420/v1/assets/images/productimage/2019/11/18/2b1b38d5-5481-4050-9a50-4a5f9ebe40f81574066461843-1.jpg",
+            "descriptive":false
+        },{
+            "category":"men fashion",
+            "subcategory":"shirt",
+            "imageLink" :"https://rukminim1.flixcart.com/image/800/960/jd7p18w0/shirt/z/2/h/xl-sandy-brown-n-t-fashion-original-imaffyaajs5zydbw.jpeg?q=50",
+            "descriptive":false
+        },{
+            "category":"men fashion",
+            "subcategory":"jeans",
+            "imageLink" :"https://images-na.ssl-images-amazon.com/images/I/71yrEovAM0L._UX569_.jpg",
+            "descriptive":false
+        },{
+            "category":"fashion",
+            "subcategory":"shoe",
+            "imageLink" :"https://images-na.ssl-images-amazon.com/images/I/41TmgvgcVPL.jpg",
+            "descriptive":false
+        }
+    ],
+    "women fashion":[
+        {
+            "category":"women fashion",
+            "subcategory":"jacket",
+            "imageLink" :"https://images-na.ssl-images-amazon.com/images/I/61vowfVHj4L._UX569_.jpg",
+            "descriptive":false
+        },{
+            "category":"women fashion",
+            "subcategory":"shirt",
+            "imageLink" :"https://cdn.shopclues.com/images1/thumbnails/90721/640/1/140108139-90721376-1533032039.jpg",
+            "descriptive":false
+        },{
+            "category":"women fashion",
+            "subcategory":"jeans",
+            "imageLink" :"https://makeupahm.com/wp-content/uploads/2018/07/Jeans-for-women-Jeans-With-High-Waist-Jeans-Woman-High-Elastic-plus-size-Women-Jeans-femme-1.jpg",
+            "descriptive":false
+        },{
+            "category":"fashion",
+            "subcategory":"shoe",
+            "imageLink" :"https://images-na.ssl-images-amazon.com/images/I/41TmgvgcVPL.jpg",
+            "descriptive":false
+        }
+    ],
+    "electronics":[
+        {
+            "category":"electronics",
+            "subcategory":"Refrigerator",
+            "imageLink" :"https://www.sathya.in/Media/Default/Thumbs/0038/0038946-samsung-fridge-rt28t31429r.png",
+            "descriptive":true
+        },{
+            "category":"electronics",
+            "subcategory":"LED",
+            "imageLink" :"https://cdn1.smartprix.com/rx-i5aBE1MKX-w1200-h1200/haier-le32k6000b-32.jpg",
+            "descriptive":true
+        },{
+            "category":"electronics",
+            "subcategory":"Camera",
+            "imageLink" :"https://cdn-4.nikon-cdn.com/e/Q5NM96RZZo-YRYNeYvAi9beHK4x3L-8u4h56I3YwHLAQ4G0XzTY4Dg==/Views/1590_D3500_front.png",
+            "descriptive":true
+        }
+    ],
+    "books":null,
+    "computer":null
+}

@@ -17,7 +17,7 @@ def readConfigFile(callFromMain):
         with open('./ecommerceClassesConfig.json') as f:
             JsonFile = json.load(f)
     else:
-        with open('./scrapper/ecommerceClassesConfig.json') as f:
+        with open('/home/ubuntu/optimalprice/scrapper/ecommerceClassesConfig.json') as f:
             JsonFile = json.load(f)
     return JsonFile
 

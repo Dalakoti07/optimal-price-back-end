@@ -56,7 +56,7 @@ def search_by_scrap(request):
             print(e)
         
         # start service of selenium and prepare the driver
-        driver=webdriver.Chrome(options=getChromeCustomOptions())
+        driver=webdriver.Chrome('/home/ubuntu/optimalprice/driver',options=getChromeCustomOptions())
 
         if not pagesLimit:
             pagesLimit=5
@@ -115,7 +115,7 @@ def fetchTheDeals(request):
         if old:
             allDeals.delete()
         # scrap new deals
-        driver=webdriver.Chrome(options=getChromeCustomOptions())
+        driver=webdriver.Chrome('/home/ubuntu/optimalprice/driver',options=getChromeCustomOptions())
         deals= flipkartDeals(driver=driver,callFromMain=False)
         driver.close()
         if not deals:

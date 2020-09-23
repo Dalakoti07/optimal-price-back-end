@@ -133,3 +133,7 @@ handle the worst case that what if app does not have internet at all
 remove the code from oncreateview and put that in onviewcreated and see performance
 
 read these https://books.agiliq.com/projects/django-orm-cookbook/en/latest/subquery.html
+
+
+aws command
+nano ~/../../var/log/apache2/error.log   - see the logs in apache2

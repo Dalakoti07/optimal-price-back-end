@@ -1,8 +1,11 @@
 ## Django rest framework based backend
 
 ### APIs EndPotin
-Postman apis can be found here []
+Postman apis can be found [here](https://documenter.getpostman.com/view/12704097/TVRd8WWy)
 
+
+### Dev
+Dev branch, and the dev db folder contains local.db file as of now we are using production regenerated .db file
 
 ## License
 The MIT License (MIT)

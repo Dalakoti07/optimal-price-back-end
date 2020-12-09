@@ -37,7 +37,11 @@ from rest_framework.response import Response
 from .CustomChromeDriverUtils import getChromeCustomOptions
 # make driver for getting all specs
 
-productDetailsdriver = webdriver.Chrome('/home/ubuntu/optimalprice/driver',options=getChromeCustomOptions())
+# for production
+# productDetailsdriver = webdriver.Chrome('/home/ubuntu/optimalprice/driver',options=getChromeCustomOptions())
+
+# for dev
+productDetailsdriver = webdriver.Chrome('/home/lonewolf/Desktop/django/optimalPrice/driver',options=getChromeCustomOptions())
 #productDetailsdriver = webdriver.Chrome(options=getChromeCustomOptions())
 # TODO u can use read only viewset, that would be helpful https://www.django-rest-framework.org/api-guide/viewsets/
 
